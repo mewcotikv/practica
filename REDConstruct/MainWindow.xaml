@@ -1,0 +1,12 @@
+<Window x:Class="REDConstruct.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.com/markup-compatibility/2006"
+        xmlns:local="clr-namespace:REDConstruct"
+        mc:Ignorable="d"
+        Title="RED Construct - Sistem Rapoarte" Height="600" Width="900">
+    <Grid Background="White">
+        <Frame x:Name="ContentFrame" NavigationUIVisibility="Hidden"/>
+    </Grid>
+</Window>
