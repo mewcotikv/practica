@@ -1,0 +1,107 @@
+@startuml UseCase_CalculatorMateriale
+title Use Case Diagram - Calculator Materiale Termoizolatie
+
+left to right direction
+
+actor User as user
+actor Client as client
+actor Admin as admin
+
+package "Calculator Materiale Termoizolatie" {
+    usecase "Gestiona Clienti" as UC1
+    usecase "Adauga Client" as UC2
+    usecase "Modifica Client" as UC3
+    usecase "Sterge Client" as UC4
+    usecase "Cauta Client" as UC5
+    
+    usecase "Gestiona Obiective" as UC6
+    usecase "Adauga Obiectiv" as UC7
+    usecase "Modifica Obiectiv" as UC8
+    usecase "Sterge Obiectiv" as UC9
+    usecase "Vizualizare Detalii Obiectiv" as UC10
+    
+    usecase "Gestiona Materiale" as UC11
+    usecase "Adauga Material" as UC12
+    usecase "Modifica Material" as UC13
+    usecase "Sterge Material" as UC14
+    usecase "Vizualizare Proprietati Material" as UC15
+    
+    usecase "Calculeaza Consum Materiale" as UC16
+    usecase "Selecteaza Obiectiv si Materiale" as UC17
+    usecase "Specifica Dimensiuni (Grosime, Suprafata)" as UC18
+    usecase "Calculeaza Necesarul per Material" as UC19
+    usecase "Vizualizare Rezultate Calcul" as UC20
+    usecase "Exporta Rezultate PDF" as UC21
+    
+    usecase "Creaza Comanda" as UC22
+    usecase "Adauga Materiale in Comanda" as UC23
+    usecase "Specifica Cantitati si Preturi" as UC24
+    usecase "Aplica Reduceri/TVA" as UC25
+    usecase "Finalizeaza Comanda" as UC26
+    usecase "Imprime Comanda" as UC27
+    usecase "Exporta Comanda PDF" as UC28
+    
+    usecase "Genereaza Rapoarte" as UC29
+    usecase "Raport Comenzi per Client" as UC30
+    usecase "Raport Consum Materiale" as UC31
+    usecase "Raport Venituri" as UC32
+    
+    usecase "Gestiona Parametri Aplicatie" as UC33
+    usecase "Configureaza Procente TVA" as UC34
+    usecase "Configureaza Rate Consum" as UC35
+    usecase "Gestiona Useri" as UC36
+}
+
+user --> UC1
+user --> UC6
+user --> UC11
+user --> UC16
+user --> UC22
+user --> UC29
+
+client --> UC10
+client --> UC20
+client --> UC21
+
+admin --> UC33
+admin --> UC34
+admin --> UC35
+admin --> UC36
+
+UC1 --> UC2
+UC1 --> UC3
+UC1 --> UC4
+UC1 --> UC5
+
+UC6 --> UC7
+UC6 --> UC8
+UC6 --> UC9
+UC6 --> UC10
+
+UC11 --> UC12
+UC11 --> UC13
+UC11 --> UC14
+UC11 --> UC15
+
+UC16 --> UC17
+UC16 --> UC18
+UC16 --> UC19
+UC16 --> UC20
+UC16 --> UC21
+
+UC22 --> UC23
+UC22 --> UC24
+UC22 --> UC25
+UC22 --> UC26
+UC22 --> UC27
+UC22 --> UC28
+
+UC29 --> UC30
+UC29 --> UC31
+UC29 --> UC32
+
+UC33 --> UC34
+UC33 --> UC35
+UC33 --> UC36
+
+@enduml
