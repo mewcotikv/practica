@@ -1,3 +1,0 @@
-c:\Users\User\Desktop\practica\REDConstruct\obj\Debug\net6.0-windows\REDConstruct.csproj.AssemblyReference.cache
-c:\Users\User\Desktop\practica\REDConstruct\obj\Debug\net6.0-windows\App.g.cs
-c:\Users\User\Desktop\practica\REDConstruct\obj\Debug\net6.0-windows\REDConstruct_MarkupCompile.cache
