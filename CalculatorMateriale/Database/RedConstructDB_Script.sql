@@ -130,3 +130,28 @@ CREATE INDEX IX_Comanda_IdObiectiv ON Comanda(IdObiectiv);
 CREATE INDEX IX_Comanda_Status ON Comanda(Status);
 CREATE INDEX IX_DetaliiComanda_IdComanda ON DetaliiComanda(IdComanda);
 CREATE INDEX IX_DetaliiComanda_IdMaterial ON DetaliiComanda(IdMaterial);
+
+-- ============================================
+-- INSERT DATE DE TEST - CLIENȚI DIN MOLDOVA
+-- ============================================
+INSERT INTO Client (Nume, CUI, Adresa, Telefon, Email, Localitate, CodPostal) VALUES
+('SC ABC Construction SRL', 'MD12345678', 'Str. Ștefan cel Mare nr. 45', '+373 22 123 456', 'contact@abcconstruction.md', 'Chișinău', 'MD2012'),
+('OOO Constructii Moldova', 'MD87654321', 'Bulevardul Dacia nr. 78', '+373 22 234 567', 'info@constructiimd.md', 'Chișinău', 'MD2001'),
+('SRL Proiectare și Construcții', 'MD11223344', 'Piața Marii Adunări Naționale nr. 1', '+373 22 345 678', 'proiecte@proiectare.md', 'Chișinău', 'MD2012'),
+('SC Termosistem SRL', 'MD55667788', 'Str. Tiraspol nr. 102', '+373 22 456 789', 'termosistem@gmail.md', 'Bălți', 'MD3100'),
+('OOO Reparații Locuințe', 'MD99887766', 'Str. Puteștei nr. 56', '+373 22 567 890', 'reparatii@locuinte.md', 'Chișinău', 'MD2005');
+
+-- ============================================
+-- INSERT DATE DE TEST - 10 MATERIALE TERMOIZOLAȚIE
+-- ============================================
+INSERT INTO Material (Denumire, Tip, Descriere, Pret, Unitate, DensitateKgM3, ConductivitateTermica, StocDisponibil, Activ) VALUES
+('Polistiren Expandat 100mm', 'Polistiren', 'Plăci de polistiren expandat densitate 25 kg/m³, 100mm grosime', 185.00, 'mp', 25.0, 0.035, 500, 1),
+('Polistiren Expandat 150mm', 'Polistiren', 'Plăci de polistiren expandat densitate 25 kg/m³, 150mm grosime', 250.00, 'mp', 25.0, 0.035, 350, 1),
+('Polistiren Extrudat 80mm', 'Polistiren', 'Plăci de polistiren extrudat, 80mm grosime, cu barier de vapori', 320.00, 'mp', 35.0, 0.032, 200, 1),
+('Vată Minerală 100mm', 'Lână minerală', 'Saltea de vată minerală, 100mm grosime, densitate 50 kg/m³', 140.00, 'mp', 50.0, 0.040, 400, 1),
+('Adeziv pentru Polistiren', 'Adeziv', 'Adeziv poliuretanic pentru fixare plăci polistiren pe zidărie', 75.00, 'kg', 1200.0, 0.240, 800, 1),
+('Dibluri Plastice cu Șurub', 'Dibluri', 'Dibluri din plastic cu șurub metalic pentru fixare polistiren', 1.50, 'buc', 900.0, 0.250, 5000, 1),
+('Plasă de Sticlă Armată', 'Plasă', 'Plasă din fibră de sticlă pentru întărire tencuielii, 160 g/m²', 28.00, 'mp', 2500.0, 0.500, 600, 1),
+('Tencuială de Bază Minerală', 'Tencuiala', 'Tencuială minerală pentru bază, pe bază de ciment și var, 25kg/sac', 130.00, 'sac', 1800.0, 0.800, 300, 1),
+('Amorsa (Grund) Dispersie', 'Amorsa', 'Amorsa de adezivitate pe bază de dispersie, 1L', 95.00, 'l', 1100.0, 0.260, 400, 1),
+('Tencuială Finală Acrilică', 'Tencuiala', 'Tencuială finală pe bază de răşini acrilice, 25kg/sac', 180.00, 'sac', 1700.0, 0.900, 250, 1);
