@@ -1,58 +1,58 @@
-# 🎯 Calculator Materiale Termoizolatie - Complete Project Index
+# 🎯 Calculator Materiale Termoizolație - Index Complet Proiect
 
-## Welcome to the RED Construct Thermal Insulation Materials Calculator
+## Bun venit la Calculator Materiale Termoizolație RED Construct
 
-This is a professional-grade WPF .NET 8 desktop application ready for development. All project structure, entity models, data access layer, and comprehensive documentation are included.
+Aceasta este o aplicație desktop profesională WPF .NET 8 gata pentru dezvoltare. Toată structura proiectului, modelele entitate, stratul acces date și documentația cuprinzătoare sunt incluse.
 
 ---
 
-## 📑 Quick Navigation
+## 📑 Navigare Rapidă
 
-### 🏗️ Architecture & Structure
-- [Project Structure Overview](PROJECT_FILES_LISTING.md) - Complete file tree and statistics
-- [Project Structure Documentation](Documentation/PROJECT_STRUCTURE.md) - Detailed explanations
-- [README](README.md) - Quick start guide
+### 🏗️ Arhitectură & Structură
+- [Prezentare Structură Proiect](PROJECT_FILES_LISTING.md) - Arbore fișiere complet și statistici
+- [Documentație Structură Proiect](Documentation/PROJECT_STRUCTURE.md) - Explicații detaliate
+- [CITEȘTE-MĂ](README.md) - Ghid pornire rapidă
 
-### 📋 Documentation & Specifications
-- [Requirements Document](Documentation/REQUIREMENTS.md) ⭐ **START HERE** - 400+ lines of complete specifications
-  - Functional Requirements (FR-1 through FR-7)
-  - Non-Functional Requirements (NFR-1 through NFR-7)
-  - Database schema
-  - Business rules
-  - User roles
+### 📋 Documentație & Specificații
+- [Document Cerințe](Documentation/REQUIREMENTS.md) ⭐ **ÎNCEPE AICI** - 400+ linii de specificații complete
+  - Cerințe Funcționale (FR-1 până FR-7)
+  - Cerințe Non-Funcționale (NFR-1 până NFR-7)
+  - Schema bază de date
+  - Reguli afaceri
+  - Roluri utilizator
   
-### 🎨 Diagrams
-- [ERD Diagram](Documentation/ERD_Diagram.md) - Entity Relationship Diagram (Mermaid format)
-- [Use Case Diagram](Documentation/UseCase_Diagram.puml) - Use case diagram (PlantUML format)
+### 🎨 Diagrame
+- [Diagrama ERD](Documentation/ERD_Diagram.md) - Diagrama Relații Entități (format Mermaid)
+- [Diagrama Cazuri Utilizare](Documentation/UseCase_Diagram.puml) - Diagrama cazuri utilizare (format PlantUML)
 
-### 💻 Code & Implementation
-- [Development Notes](DEVELOPMENT.md) - Architecture decisions, standards, guidelines
-- [Changelog](CHANGELOG.md) - Version history and roadmap
+### 💻 Cod & Implementare
+- [Note Dezvoltare](DEVELOPMENT.md) - Decizii arhitectură, standarde, linii directoare
+- [Jurnal Schimbări](CHANGELOG.md) - Istoric versiuni și hartă traseu
 
-### 📊 Project Summary
-- [Delivery Summary](DELIVERY_SUMMARY.md) - Complete delivery checklist
+### 📊 Rezumat Proiect
+- [Rezumat Livrare](DELIVERY_SUMMARY.md) - Listă verificare livrare completă
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Pornire Rapidă
 
-### 1. **Open Project**
+### 1. **Deschide Proiectul**
 ```bash
 cd d:\redconstruct practica\CalculatorMateriale
 ```
 
-### 2. **Restore Dependencies**
+### 2. **Restaurează Dependențe**
 ```bash
 dotnet restore
 ```
 
-### 3. **Create Database**
+### 3. **Creează Baza de Date**
 ```bash
 dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
-### 4. **Build & Run**
+### 4. **Construiește & Rulează**
 ```bash
 dotnet build
 dotnet run
@@ -60,43 +60,44 @@ dotnet run
 
 ---
 
-## 📁 Project Structure
+## 📁 Structura Proiect
 
 ```
 CalculatorMateriale/
-├── Models/              (6 Entity Classes)
-├── Data/                (Database & Repository Layer)
-├── ViewModels/          (5 MVVM ViewModels)
-├── Helpers/             (Utilities & Calculators)
-├── Views/               (Ready for XAML - Phase 2)
-├── Resources/           (Ready for Styles - Phase 2)
-├── Documentation/       (Complete specs)
-└── Configuration Files  (.csproj, appsettings.json)
+├── Models/              (6 Clase Entitate)
+├── Data/                (Strat Bază de Date & Depozit)
+├── ViewModels/          (5 ViewModels MVVM)
+├── Helpers/             (Utilitare & Calcule)
+├── Views/               (Gata pentru XAML - Faza 2)
+├── Resources/           (Gata pentru Stiluri - Faza 2)
+├── Documentation/       (Specificații complete)
+└── Fișiere Configurare  (.csproj, appsettings.json)
 ```
 
 ---
 
-## 🎯 Key Components
+## 🎯 Componente Cheie
 
-### Models (6 Entity Classes)
-1. **Client** - Client/Company information
-2. **Obiectiv** - Building projects
-3. **Material** - Thermal insulation materials
-4. **CalculConsum** - Material consumption calculations
-5. **Comanda** - Orders
-6. **DetaliiComanda** - Order line items
+### Modele (6 Clase Entitate)
+1. **Client** - Informații client/companie
+2. **Obiectiv** - Proiecte construcție
+3. **Material** - Materiale termoizolație
+4. **CalculConsum** - Calcule consum materiale
+5. **Comanda** - Comenzi
+6. **DetaliiComanda** - Articole linie comandă
 
-### Data Access Layer
-- **ApplicationDbContext** - EF Core configuration
-- **Repository** - Generic CRUD repository
-- **UnitOfWork** - Coordinates repositories
+### Strat Acces Date
+- **ApplicationDbContext** - Configurare EF Core
+- **Repository** - Depozit generic CRUD
+- **UnitOfWork** - Coordonează depozite
 
-### ViewModels (5 Classes)
-- **ClientViewModel** - Client management
-- **ObiectivViewModel** - Project management
-- **MaterialViewModel** - Material management
-- **CalculConsumViewModel** - Calculations
-- **ComandaViewModel** - Order management
+### ViewModels (5 Clase)
+- **ClientViewModel** - Gestionare clienți
+- **ObiectivViewModel** - Gestionare proiecte
+- **MaterialViewModel** - Gestionare materiale
+- **CalculConsumViewModel** - Calcule
+- **ComandaViewModel** - Gestionare comenzi
+
 
 ### Helpers
 - **RelayCommand** - ICommand implementation
