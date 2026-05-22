@@ -32,7 +32,10 @@ CREATE TABLE Obiectiv (
     DataCrearii DATETIME NOT NULL DEFAULT GETDATE(),
     DataFinalizarii DATETIME NULL,
     Status NVARCHAR(20) NULL DEFAULT 'Activ',
-    CONSTRAINT FK_Obiectiv_Client FOREIGN KEY (IdClient) REFERENCES Client(IdClient)
+    CONSTRAINT FK_Obiectiv_Client FOREIGN KEY (IdClient) 
+        REFERENCES Client(IdClient) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
 );
 
 -- Create Material Table
@@ -68,8 +71,14 @@ CREATE TABLE CalculConsum (
     Randament DECIMAL(5, 2) NULL,
     DataCalcul DATETIME NOT NULL DEFAULT GETDATE(),
     Observatii NVARCHAR(200) NULL,
-    CONSTRAINT FK_CalculConsum_Obiectiv FOREIGN KEY (IdObiectiv) REFERENCES Obiectiv(IdObiectiv),
-    CONSTRAINT FK_CalculConsum_Material FOREIGN KEY (IdMaterial) REFERENCES Material(IdMaterial)
+    CONSTRAINT FK_CalculConsum_Obiectiv FOREIGN KEY (IdObiectiv) 
+        REFERENCES Obiectiv(IdObiectiv) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT FK_CalculConsum_Material FOREIGN KEY (IdMaterial) 
+        REFERENCES Material(IdMaterial) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE
 );
 
 -- Create Comanda Table
@@ -84,8 +93,14 @@ CREATE TABLE Comanda (
     TVA DECIMAL(10, 2) NULL,
     Reducere DECIMAL(10, 2) NULL,
     Observatii NVARCHAR(300) NULL,
-    CONSTRAINT FK_Comanda_Client FOREIGN KEY (IdClient) REFERENCES Client(IdClient),
-    CONSTRAINT FK_Comanda_Obiectiv FOREIGN KEY (IdObiectiv) REFERENCES Obiectiv(IdObiectiv)
+    CONSTRAINT FK_Comanda_Client FOREIGN KEY (IdClient) 
+        REFERENCES Client(IdClient) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT FK_Comanda_Obiectiv FOREIGN KEY (IdObiectiv) 
+        REFERENCES Obiectiv(IdObiectiv) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE
 );
 
 -- Create DetaliiComanda Table
@@ -97,8 +112,14 @@ CREATE TABLE DetaliiComanda (
     PretUnitar DECIMAL(10, 2) NOT NULL,
     PretTotal DECIMAL(10, 2) NULL,
     ProcentReducere DECIMAL(5, 2) NULL,
-    CONSTRAINT FK_DetaliiComanda_Comanda FOREIGN KEY (IdComanda) REFERENCES Comanda(IdComanda),
-    CONSTRAINT FK_DetaliiComanda_Material FOREIGN KEY (IdMaterial) REFERENCES Material(IdMaterial)
+    CONSTRAINT FK_DetaliiComanda_Comanda FOREIGN KEY (IdComanda) 
+        REFERENCES Comanda(IdComanda) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT FK_DetaliiComanda_Material FOREIGN KEY (IdMaterial) 
+        REFERENCES Material(IdMaterial) 
+        ON DELETE RESTRICT 
+        ON UPDATE CASCADE
 );
 
 -- Create indexes for the new tables
