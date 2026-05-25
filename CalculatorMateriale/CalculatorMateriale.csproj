@@ -24,7 +24,7 @@
     <Copyright>© 2026 RED Construct. All rights reserved.</Copyright>
     
     <!-- Deployment -->
-    <ApplicationIcon>Resources\App.ico</ApplicationIcon>
+    <!-- <ApplicationIcon>Resources\App.ico</ApplicationIcon> -->
     <StartupObject>CalculatorMateriale.App</StartupObject>
   </PropertyGroup>
 
@@ -68,14 +68,11 @@
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
 
-    <!-- PDF Generation -->
-    <PackageReference Include="iText7" Version="8.0.1" />
-
-    <!-- Data Annotations -->
-    <PackageReference Include="System.ComponentModel.DataAnnotations" Version="4.7.0" />
-
-    <!-- Development Tools -->
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Common" Version="1.19.0" />
+    <!-- Export Excel -->
+    <PackageReference Include="NPOI" Version="2.7.1" />
+    
+    <!-- PDF Generation - QuestPDF (Free, Modern) -->
+    <PackageReference Include="QuestPDF" Version="2024.3.0" />
   </ItemGroup>
 
   <!-- Project References (if needed) -->

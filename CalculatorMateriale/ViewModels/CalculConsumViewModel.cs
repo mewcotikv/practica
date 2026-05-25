@@ -22,7 +22,7 @@ namespace CalculatorMateriale.ViewModels
             _unitOfWork = unitOfWork;
             _calculConsume = new ObservableCollection<CalculConsum>();
 
-            LoadCalculConsume = new Helpers.RelayCommand(async _ => await LoadCalculConsume());
+            LoadCalculConsume = new Helpers.RelayCommand(async _ => await LoadCalculConsumeAsync());
             AddCalculCommand = new Helpers.RelayCommand(async _ => await AddCalcul(), _ => SelectedObiectiv != null);
             EditCalculCommand = new Helpers.RelayCommand(async _ => await EditCalcul(), _ => SelectedCalcul != null);
             DeleteCalculCommand = new Helpers.RelayCommand(async _ => await DeleteCalcul(), _ => SelectedCalcul != null);
@@ -67,7 +67,7 @@ namespace CalculatorMateriale.ViewModels
         public ICommand FilterByProjectCommand { get; }
         public ICommand ExportPDFCommand { get; }
 
-        private async Task LoadCalculConsume()
+        private async Task LoadCalculConsumeAsync()
         {
             var calcule = await _unitOfWork.CalculConsumRepository.GetAllAsync();
             CalculConsume = new ObservableCollection<CalculConsum>(calcule.OrderByDescending(c => c.DataCalcul));
@@ -94,7 +94,7 @@ namespace CalculatorMateriale.ViewModels
             {
                 _unitOfWork.CalculConsumRepository.Delete(SelectedCalcul);
                 await _unitOfWork.SaveChangesAsync();
-                await LoadCalculConsume();
+                await LoadCalculConsumeAsync();
             }
         }
 

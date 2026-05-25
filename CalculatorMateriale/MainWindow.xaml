@@ -1,0 +1,68 @@
+<Window x:Class="CalculatorMateriale.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CalculatorMateriale"
+        mc:Ignorable="d"
+        Title="Calculator Materiale Termoizolație - RED Construct" 
+        Height="600" 
+        Width="900"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Calculator Materiale Termoizolație" 
+                       FontSize="28" 
+                       FontWeight="Bold" 
+                       Foreground="#1976D2"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+            
+            <TextBlock Text="RED Construct" 
+                       FontSize="18" 
+                       Foreground="#424242"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+            
+            <TextBlock Text="Versiunea 1.0 - Aplicație WPF .NET 8" 
+                       FontSize="14" 
+                       Foreground="#757575"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,30"/>
+            
+            <TextBlock Text="✓ Bază de date configurată" 
+                       FontSize="12" 
+                       Foreground="#4CAF50"
+                       HorizontalAlignment="Center"
+                       Margin="0,5"/>
+            
+            <TextBlock Text="✓ Export Excel (NPOI)" 
+                       FontSize="12" 
+                       Foreground="#4CAF50"
+                       HorizontalAlignment="Center"
+                       Margin="0,5"/>
+            
+            <TextBlock Text="✓ Export PDF (QuestPDF)" 
+                       FontSize="12" 
+                       Foreground="#4CAF50"
+                       HorizontalAlignment="Center"
+                       Margin="0,5"/>
+            
+            <TextBlock Text="✓ Arhitectură MVVM" 
+                       FontSize="12" 
+                       Foreground="#4CAF50"
+                       HorizontalAlignment="Center"
+                       Margin="0,5,0,20"/>
+            
+            <Button Content="Deschide Documentație (README_RO.md)" 
+                    Background="#1976D2" 
+                    Foreground="White"
+                    Padding="15,10"
+                    FontSize="14"
+                    HorizontalAlignment="Center"
+                    Margin="0,10"
+                    Width="350"/>
+        </StackPanel>
+    </Grid>
+</Window>
