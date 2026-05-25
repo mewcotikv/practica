@@ -6,63 +6,175 @@
         xmlns:local="clr-namespace:CalculatorMateriale"
         mc:Ignorable="d"
         Title="Calculator Materiale Termoizolație - RED Construct" 
-        Height="600" 
-        Width="900"
+        Height="700" 
+        Width="1200"
         WindowStartupLocation="CenterScreen"
-        Background="#F5F5F5">
-    <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Calculator Materiale Termoizolație" 
-                       FontSize="28" 
-                       FontWeight="Bold" 
-                       Foreground="#1976D2"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,10"/>
+        Background="#FAFAFA"
+        Icon="pack://application:,,,/Resources/App.ico">
+    
+    <Window.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1A1A2E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#0F3460"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TopBarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#1976D2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True">
+        <!-- Top Bar -->
+        <StackPanel DockPanel.Dock="Top" Height="60" Background="White" Orientation="Horizontal" VerticalAlignment="Center">
+            <TextBlock Text="RED Construct" FontSize="20" FontWeight="Bold" Foreground="#1976D2" VerticalAlignment="Center" Margin="20,0,0,0"/>
+            <TextBlock Text="Calculator Materiale Termoizolație" FontSize="14" Foreground="#424242" VerticalAlignment="Center" Margin="20,0,0,0"/>
             
-            <TextBlock Text="RED Construct" 
-                       FontSize="18" 
-                       Foreground="#424242"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,20"/>
-            
-            <TextBlock Text="Versiunea 1.0 - Aplicație WPF .NET 8" 
-                       FontSize="14" 
-                       Foreground="#757575"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,30"/>
-            
-            <TextBlock Text="✓ Bază de date configurată" 
-                       FontSize="12" 
-                       Foreground="#4CAF50"
-                       HorizontalAlignment="Center"
-                       Margin="0,5"/>
-            
-            <TextBlock Text="✓ Export Excel (NPOI)" 
-                       FontSize="12" 
-                       Foreground="#4CAF50"
-                       HorizontalAlignment="Center"
-                       Margin="0,5"/>
-            
-            <TextBlock Text="✓ Export PDF (QuestPDF)" 
-                       FontSize="12" 
-                       Foreground="#4CAF50"
-                       HorizontalAlignment="Center"
-                       Margin="0,5"/>
-            
-            <TextBlock Text="✓ Arhitectură MVVM" 
-                       FontSize="12" 
-                       Foreground="#4CAF50"
-                       HorizontalAlignment="Center"
-                       Margin="0,5,0,20"/>
-            
-            <Button Content="Deschide Documentație (README_RO.md)" 
-                    Background="#1976D2" 
-                    Foreground="White"
-                    Padding="15,10"
-                    FontSize="14"
-                    HorizontalAlignment="Center"
-                    Margin="0,10"
-                    Width="350"/>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,20,0" VerticalAlignment="Center">
+                <Button Content="ℹ️ Despre" Style="{StaticResource TopBarButtonStyle}" Margin="0,0,10,0"/>
+                <Button Content="⚙️ Setări" Style="{StaticResource TopBarButtonStyle}" Margin="0,0,10,0"/>
+                <Button Content="❌ Ieșire" Style="{StaticResource TopBarButtonStyle}"/>
+            </StackPanel>
         </StackPanel>
-    </Grid>
+
+        <!-- Separator -->
+        <Border DockPanel.Dock="Top" Height="1" Background="#E0E0E0"/>
+
+        <!-- Main Content Area -->
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="1"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar Menu -->
+            <StackPanel Grid.Column="0" Background="#16213E" VerticalAlignment="Stretch">
+                <TextBlock Text="MENIU PRINCIPAL" FontSize="12" FontWeight="Bold" Foreground="#64B5F6" Padding="15,20,15,10"/>
+                
+                <Button x:Name="BtnDashboard" Content="📊 Dashboard" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Dashboard"/>
+                <Button x:Name="BtnClienti" Content="👥 Clienți" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Clienti"/>
+                <Button x:Name="BtnMateriale" Content="📦 Materiale" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Materiale"/>
+                <Button x:Name="BtnComenzi" Content="📋 Comenzi" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Comenzi"/>
+                <Button x:Name="BtnCalcule" Content="🧮 Calcule" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Calcule"/>
+                <Button x:Name="BtnProiecte" Content="🏗️ Proiecte" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Proiecte"/>
+                
+                <Separator Margin="10,20" Background="#1A1A2E"/>
+                
+                <TextBlock Text="RAPOARTE" FontSize="12" FontWeight="Bold" Foreground="#64B5F6" Padding="15,10,15,10"/>
+                <Button Content="📈 Rapoarte Vânzări" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Rapoarte"/>
+                <Button Content="📉 Stocuri" Style="{StaticResource MenuButtonStyle}" 
+                        Click="NavigateToPage" Tag="Stocuri"/>
+                
+                <Separator Margin="10,20" Background="#1A1A2E"/>
+                
+                <TextBlock Text="EXPORT" FontSize="12" FontWeight="Bold" Foreground="#64B5F6" Padding="15,10,15,10"/>
+                <Button Content="📄 Export Excel" Style="{StaticResource MenuButtonStyle}" 
+                        Click="ExportToExcel"/>
+                <Button Content="📑 Export PDF" Style="{StaticResource MenuButtonStyle}" 
+                        Click="ExportToPDF"/>
+            </StackPanel>
+
+            <!-- Separator Vertical -->
+            <Border Grid.Column="1" Background="#E0E0E0"/>
+
+            <!-- Content Area with Frame for Navigation -->
+            <Grid Grid.Column="2" Background="#FAFAFA">
+                <Frame x:Name="ContentFrame" NavigationUIVisibility="Hidden"/>
+                
+                <!-- Default Dashboard Content (if no page is loaded) -->
+                <StackPanel x:Name="DashboardPlaceholder" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="Bun venit în Calculator Materiale Termoizolație!" 
+                               FontSize="28" FontWeight="Bold" Foreground="#1976D2"
+                               TextAlignment="Center" Margin="0,0,0,20"/>
+                    
+                    <TextBlock Text="RED Construct" 
+                               FontSize="18" Foreground="#424242"
+                               TextAlignment="Center" Margin="0,0,0,30"/>
+                    
+                    <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock Text="✓" FontSize="16" Foreground="#4CAF50" Margin="0,0,10,0"/>
+                            <TextBlock Text="Bază de date configurată (SQL Server LocalDB)" FontSize="13" Foreground="#424242"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock Text="✓" FontSize="16" Foreground="#4CAF50" Margin="0,0,10,0"/>
+                            <TextBlock Text="Export Excel cu NPOI (gratuit)" FontSize="13" Foreground="#424242"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock Text="✓" FontSize="16" Foreground="#4CAF50" Margin="0,0,10,0"/>
+                            <TextBlock Text="Export PDF cu QuestPDF (open-source)" FontSize="13" Foreground="#424242"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock Text="✓" FontSize="16" Foreground="#4CAF50" Margin="0,0,10,0"/>
+                            <TextBlock Text="Interfață MVVM profesională" FontSize="13" Foreground="#424242"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock Text="✓" FontSize="16" Foreground="#4CAF50" Margin="0,0,10,0"/>
+                            <TextBlock Text="Navigare între module funcțională" FontSize="13" Foreground="#424242"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <TextBlock Text="Versiunea 1.0 - .NET 8 WPF" 
+                               FontSize="12" Foreground="#757575"
+                               TextAlignment="Center" Margin="0,20,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </DockPanel>
 </Window>
