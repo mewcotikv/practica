@@ -9,8 +9,7 @@
         Height="700" 
         Width="1200"
         WindowStartupLocation="CenterScreen"
-        Background="#FAFAFA"
-        Icon="pack://application:,,,/Resources/App.ico">
+        Background="#FAFAFA">
     
     <Window.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
