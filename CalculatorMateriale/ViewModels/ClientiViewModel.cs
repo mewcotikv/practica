@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using CalculatorMateriale.Data;
 using CalculatorMateriale.Helpers;
@@ -144,12 +145,15 @@ namespace CalculatorMateriale.ViewModels
             try
             {
                 _logger.LogInformation("Se deschide formularul pentru adăugarea unui nou client");
+                MessageBox.Show("Formularul pentru adăugarea unui nou client va fi deschis.", 
+                               "Adaugă Client", MessageBoxButton.OK, MessageBoxImage.Information);
                 // TODO: Deschide ClientFormView pentru adăugare
                 // Aceasta va fi implementată la integrarea cu MainWindow
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Eroare la adăugarea clientului: {ex.Message}");
+                MessageBox.Show($"Eroare: {ex.Message}", "Adaugă Client", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -174,16 +178,35 @@ namespace CalculatorMateriale.ViewModels
         }
 
         /// <summary>
-        /// Șterge clientul selectat
+        /// Șterge clientul selectat cu confirmare
         /// </summary>
         private async Task DeleteClientAsync()
         {
             if (SelectedClient == null)
+            {
+                MessageBox.Show("Selectați un client pentru a-l șterge.", 
+                               "Ștergere Client", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
 
             try
             {
                 var clientName = SelectedClient.Nume;
+                
+                // Afișează dialog de confirmare
+                var result = MessageBox.Show(
+                    $"Sunteți sigur că doriți să ștergeți clientul \"{clientName}\"?\n\nAceastă acțiune nu poate fi anulată.",
+                    "Confirmare Ștergere",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question,
+                    MessageBoxResult.No);
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    _logger.LogInformation($"Ștergerea clientului {clientName} a fost anulată de utilizator");
+                    return;
+                }
+
                 _logger.LogInformation($"Se șterge clientul: {clientName}");
 
                 _unitOfWork.ClientRepository.Delete(SelectedClient);
@@ -191,10 +214,15 @@ namespace CalculatorMateriale.ViewModels
 
                 await LoadClientsAsync();
                 _logger.LogInformation($"Clientul {clientName} a fost șters cu succes");
+                
+                MessageBox.Show($"Clientul \"{clientName}\" a fost șters cu succes.",
+                               "Ștergere Client", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Eroare la ștergerea clientului: {ex.Message}");
+                MessageBox.Show($"Eroare la ștergerea clientului: {ex.Message}",
+                               "Ștergere Client", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
