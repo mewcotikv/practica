@@ -1,0 +1,159 @@
+<UserControl x:Class="CalculatorMateriale.Views.ClientiView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CalculatorMateriale.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+    
+    <DockPanel Background="#FAFAFA" LastChildFill="True">
+        <!-- Header Section -->
+        <Border DockPanel.Dock="Top" Background="White" Padding="20">
+            <StackPanel>
+                <TextBlock Text="Gestionare Clienți" 
+                           Style="{StaticResource TitleTextBlockStyle}"
+                           Foreground="#C0392B"/>
+                <TextBlock Text="Adaugă, editează și șterge clienți din bază de date"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           Foreground="#757575"
+                           FontSize="13"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Separator -->
+        <Border DockPanel.Dock="Top" Height="1" Background="#E0E0E0"/>
+
+        <!-- Toolbar Section -->
+        <Border DockPanel.Dock="Top" Background="White" Padding="20">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="➕ Adaugă Client Nou" 
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Margin="0,0,10,0"
+                        Padding="12,8"
+                        FontSize="13"/>
+                <Button Content="✏️ Editează" 
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="0,0,10,0"
+                        Padding="12,8"
+                        FontSize="13"/>
+                <Button Content="❌ Șterge" 
+                        Style="{StaticResource OutlineButtonStyle}"
+                        Margin="0,0,10,0"
+                        Padding="12,8"
+                        FontSize="13"/>
+                <TextBox Text="" 
+                         Style="{StaticResource DefaultTextBoxStyle}"
+                         Margin="0,0,10,0"
+                         Width="250"
+                         Height="36"
+                         VerticalContentAlignment="Center"/>
+                <Button Content="🔍 Cauta" 
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Padding="12,8"
+                        FontSize="13"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Separator -->
+        <Border DockPanel.Dock="Top" Height="1" Background="#E0E0E0"/>
+
+        <!-- Content Section with DataGrid -->
+        <Border DockPanel.Dock="Bottom" Padding="20">
+            <Grid>
+                <DataGrid x:Name="ClientiDataGrid" 
+                          AutoGenerateColumns="False"
+                          Style="{StaticResource DefaultDataGridStyle}"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False">
+                    <DataGrid.Columns>
+                        <!-- ID Column -->
+                        <DataGridTextColumn Header="ID" 
+                                          Binding="{Binding IdClient}"
+                                          Width="60"
+                                          IsReadOnly="True"/>
+                        
+                        <!-- Nume Column -->
+                        <DataGridTextColumn Header="Denumire Companie" 
+                                          Binding="{Binding Nume}"
+                                          Width="250"
+                                          IsReadOnly="True"/>
+                        
+                        <!-- CUI Column -->
+                        <DataGridTextColumn Header="CUI" 
+                                          Binding="{Binding CUI}"
+                                          Width="120"
+                                          IsReadOnly="True"/>
+                        
+                        <!-- Localitate Column -->
+                        <DataGridTextColumn Header="Localitate" 
+                                          Binding="{Binding Localitate}"
+                                          Width="150"
+                                          IsReadOnly="True"/>
+                        
+                        <!-- Telefon Column -->
+                        <DataGridTextColumn Header="Telefon" 
+                                          Binding="{Binding Telefon}"
+                                          Width="130"
+                                          IsReadOnly="True"/>
+                        
+                        <!-- Email Column -->
+                        <DataGridTextColumn Header="Email" 
+                                          Binding="{Binding Email}"
+                                          Width="200"
+                                          IsReadOnly="True"/>
+                        
+                        <!-- Data Inregistrare Column -->
+                        <DataGridTextColumn Header="Data Înregistrării" 
+                                          Binding="{Binding DataInregistrare, StringFormat=dd/MM/yyyy}"
+                                          Width="130"
+                                          IsReadOnly="True"/>
+                        
+                        <!-- Activ Column -->
+                        <DataGridCheckBoxColumn Header="Activ" 
+                                              Binding="{Binding Activ}"
+                                              Width="70"
+                                              IsReadOnly="False"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Empty State Message -->
+                <TextBlock x:Name="EmptyStateMessage"
+                           Text="Niciun client înregistrat. Faceți clic pe 'Adaugă Client Nou' pentru a crea unul."
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           Foreground="#757575"
+                           TextAlignment="Center"
+                           Visibility="Collapsed"/>
+            </Grid>
+        </Border>
+
+        <!-- Status Bar -->
+        <Border DockPanel.Dock="Bottom" Background="White" Height="40" Padding="20">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Total clienți: " 
+                           Style="{StaticResource LabelTextBlockStyle}"
+                           Margin="0"/>
+                <TextBlock x:Name="TotalClientsLabel" 
+                           Text="0"
+                           Style="{StaticResource LabelTextBlockStyle}"
+                           Foreground="#C0392B"
+                           FontWeight="Bold"
+                           Margin="5,0,0,0"/>
+                <TextBlock Text="  |  " 
+                           Style="{StaticResource LabelTextBlockStyle}"
+                           Margin="10,0"/>
+                <TextBlock Text="Selectat: " 
+                           Style="{StaticResource LabelTextBlockStyle}"
+                           Margin="0"/>
+                <TextBlock x:Name="SelectedClientLabel" 
+                           Text="Niciun"
+                           Style="{StaticResource LabelTextBlockStyle}"
+                           Foreground="#1976D2"
+                           FontWeight="Bold"
+                           Margin="5,0,0,0"/>
+            </StackPanel>
+        </Border>
+    </DockPanel>
+</UserControl>
