@@ -174,3 +174,5 @@ D:\redconstruct practica\CalculatorMateriale\obj\Debug\net8.0-windows\refint\Cal
 D:\redconstruct practica\CalculatorMateriale\obj\Debug\net8.0-windows\CalculatorMateriale.pdb
 D:\redconstruct practica\CalculatorMateriale\obj\Debug\net8.0-windows\CalculatorMateriale.genruntimeconfig.cache
 D:\redconstruct practica\CalculatorMateriale\obj\Debug\net8.0-windows\ref\CalculatorMateriale.dll
+D:\redconstruct practica\CalculatorMateriale\obj\Debug\net8.0-windows\Views\ClientFormView.g.cs
+D:\redconstruct practica\CalculatorMateriale\obj\Debug\net8.0-windows\Views\ClientFormView.baml

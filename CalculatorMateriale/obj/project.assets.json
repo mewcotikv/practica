@@ -5103,9 +5103,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\redconstruct practica\\CalculatorMateriale\\CalculatorMateriale_sfagfjkh_wpftmp.csproj",
+      "projectUniqueName": "D:\\redconstruct practica\\CalculatorMateriale\\CalculatorMateriale.csproj",
       "projectName": "CalculatorMateriale",
-      "projectPath": "d:\\redconstruct practica\\CalculatorMateriale\\CalculatorMateriale_sfagfjkh_wpftmp.csproj",
+      "projectPath": "D:\\redconstruct practica\\CalculatorMateriale\\CalculatorMateriale.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
       "outputPath": "D:\\redconstruct practica\\CalculatorMateriale\\obj\\",
       "projectStyle": "PackageReference",
