@@ -270,14 +270,21 @@ namespace CalculatorMateriale
         /// </summary>
         private IEnumerable<T> FindLogicalChildren<T>(DependencyObject parent) where T : DependencyObject
         {
+            if (parent == null)
+                yield break;
+
             var children = LogicalTreeHelper.GetChildren(parent);
             foreach (var child in children)
             {
                 if (child is T typedChild)
                     yield return typedChild;
 
-                foreach (var grandChild in FindLogicalChildren<T>(child as DependencyObject ?? parent))
-                    yield return grandChild;
+                // Only recurse if child is a DependencyObject to avoid infinite recursion
+                if (child is DependencyObject depObj)
+                {
+                    foreach (var grandChild in FindLogicalChildren<T>(depObj))
+                        yield return grandChild;
+                }
             }
         }
 

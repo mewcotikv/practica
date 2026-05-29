@@ -62,10 +62,14 @@ namespace CalculatorMateriale.ViewModels
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             Clienti = new ObservableCollection<Client>();
-            LoadClientsCommand = new RelayCommand(_ => LoadClientsAsync());
+            LoadClientsCommand = new RelayCommand(_ => {
+                _ = LoadClientsAsync();
+            });
             AddClientCommand = new RelayCommand(_ => AddClient());
             EditClientCommand = new RelayCommand(_ => EditClient(), _ => SelectedClient != null);
-            DeleteClientCommand = new RelayCommand(_ => DeleteClientAsync(), _ => SelectedClient != null);
+            DeleteClientCommand = new RelayCommand(_ => {
+                _ = DeleteClientAsync();
+            }, _ => SelectedClient != null);
             SearchClientsCommand = new RelayCommand(_ => SearchClients());
 
             // Încarcă clienții la inițializare
