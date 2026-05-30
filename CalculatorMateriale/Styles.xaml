@@ -220,4 +220,112 @@
         <Setter Property="Margin" Value="10"/>
     </Style>
 
+    <!-- Stil pentru TextBlock corp (Body Text) -->
+    <Style x:Key="BodyTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="LineHeight" Value="20"/>
+    </Style>
+
+    <!-- Stil pentru TextBlock de succes -->
+    <Style x:Key="SuccessTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#388E3C"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+
+    <!-- Stil pentru TextBlock cu accent roșu -->
+    <Style x:Key="AccentTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryRedBrush}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!-- Stil pentru Button minim -->
+    <Style x:Key="MinimalButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryRedBrush}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource LightRedBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource DarkRedBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Stil pentru Button icon (doar simbol) -->
+    <Style x:Key="IconButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryRedBrush}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" 
+                            CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFEBEE"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#FFCDD2"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Stil pentru Border roșie (accent red border) -->
+    <Style x:Key="RedBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryRedBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <!-- Stil pentru separator horizontal -->
+    <Style x:Key="HorizontalSeparatorStyle" TargetType="Border">
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Margin" Value="0,10"/>
+    </Style>
+
+    <!-- Stil pentru separator roșu -->
+    <Style x:Key="RedSeparatorStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PrimaryRedBrush}"/>
+        <Setter Property="Height" Value="3"/>
+        <Setter Property="Margin" Value="0,10"/>
+    </Style>
+
+    <!-- Stil pentru ContentControl -->
+    <Style x:Key="SimpleContentStyle" TargetType="ContentControl">
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+    </Style>
+
 </ResourceDictionary>
