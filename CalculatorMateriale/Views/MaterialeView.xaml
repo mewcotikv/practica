@@ -64,7 +64,13 @@
         </DataGrid>
 
         <DockPanel Grid.Row="3" Margin="0,12,0,0">
-            <TextBlock x:Name="StatusText" Text="Gata" Foreground="{StaticResource MutedInkBrush}" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBox x:Name="MaterialSearchInput" Width="220" Height="34" Margin="0,0,8,0"
+                         Style="{StaticResource DefaultTextBoxStyle}" TextChanged="MaterialSearchInput_TextChanged"/>
+                <Button Content="Curăță" Width="82" Height="34" Margin="0,0,12,0"
+                        Style="{StaticResource OutlineButtonStyle}" Click="ClearFormButton_Click"/>
+                <TextBlock x:Name="StatusText" Text="Gata" Foreground="{StaticResource MutedInkBrush}" VerticalAlignment="Center"/>
+            </StackPanel>
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Șterge" Width="90" Height="34" Margin="0,0,8,0"
                         Style="{StaticResource OutlineButtonStyle}" Click="DeleteButton_Click"/>

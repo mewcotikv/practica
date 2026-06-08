@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace CalculatorMateriale.Views
     public partial class MaterialeView : UserControl
     {
         private IUnitOfWork? _unitOfWork;
+        private List<Material> _allMateriale = new();
         private ObservableCollection<Material> _materiale = new();
 
         public MaterialeView()
@@ -31,12 +33,29 @@ namespace CalculatorMateriale.Views
         {
             if (_unitOfWork == null)
             {
-                StatusText.Text = "Serviciile bazei de date nu sunt initializate.";
+                StatusText.Text = "Serviciile bazei de date nu sunt inițializate.";
                 return;
             }
 
             var materiale = await _unitOfWork.MaterialRepository.GetAllAsync();
-            _materiale = new ObservableCollection<Material>(materiale.OrderBy(m => m.Tip).ThenBy(m => m.Denumire));
+            _allMateriale = materiale.OrderBy(m => m.Tip).ThenBy(m => m.Denumire).ToList();
+            ApplyMaterialFilter();
+        }
+
+        private void ApplyMaterialFilter()
+        {
+            var search = MaterialSearchInput?.Text?.Trim().ToLowerInvariant();
+            var materiale = _allMateriale.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                materiale = materiale.Where(m =>
+                    m.Denumire.ToLowerInvariant().Contains(search) ||
+                    m.Tip.ToLowerInvariant().Contains(search) ||
+                    m.Unitate.ToLowerInvariant().Contains(search));
+            }
+
+            _materiale = new ObservableCollection<Material>(materiale);
             MaterialeGrid.ItemsSource = _materiale;
             StatusText.Text = $"Total materiale: {_materiale.Count}";
         }
@@ -47,25 +66,25 @@ namespace CalculatorMateriale.Views
 
             if (string.IsNullOrWhiteSpace(DenumireInput.Text) || string.IsNullOrWhiteSpace(TipInput.Text))
             {
-                StatusText.Text = "Denumirea si tipul sunt obligatorii.";
+                StatusText.Text = "Denumirea și tipul sunt obligatorii.";
                 return false;
             }
 
             if (!TryReadDecimal(PretInput.Text, out var pret) || pret <= 0)
             {
-                StatusText.Text = "Pretul trebuie sa fie mai mare decat 0.";
+                StatusText.Text = "Prețul trebuie să fie mai mare decât 0.";
                 return false;
             }
 
             if (!int.TryParse(StocInput.Text, out var stoc) || stoc < 0)
             {
-                StatusText.Text = "Stocul trebuie sa fie un numar pozitiv.";
+                StatusText.Text = "Stocul trebuie să fie un număr pozitiv.";
                 return false;
             }
 
             if (!TryReadDecimal(DensitateInput.Text, out var densitate) || densitate <= 0)
             {
-                StatusText.Text = "Densitatea trebuie sa fie mai mare decat 0.";
+                StatusText.Text = "Densitatea trebuie să fie mai mare decât 0.";
                 return false;
             }
 
@@ -94,14 +113,16 @@ namespace CalculatorMateriale.Views
 
             await _unitOfWork.MaterialRepository.AddAsync(material);
             await _unitOfWork.SaveChangesAsync();
+            ClearForm();
             await LoadMaterialeAsync();
+            StatusText.Text = "Materialul a fost adăugat.";
         }
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             if (_unitOfWork == null || MaterialeGrid.SelectedItem is not Material selected || !TryReadMaterial(out var form))
             {
-                StatusText.Text = "Selectati un material pentru actualizare.";
+                StatusText.Text = "Selectați un material pentru actualizare.";
                 return;
             }
 
@@ -111,41 +132,60 @@ namespace CalculatorMateriale.Views
             selected.Unitate = form.Unitate;
             selected.StocDisponibil = form.StocDisponibil;
             selected.DensitateKgM3 = form.DensitateKgM3;
+
             _unitOfWork.MaterialRepository.Update(selected);
             await _unitOfWork.SaveChangesAsync();
+            ClearForm();
             await LoadMaterialeAsync();
+            StatusText.Text = "Materialul a fost actualizat.";
         }
 
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (_unitOfWork == null || MaterialeGrid.SelectedItem is not Material selected)
             {
-                StatusText.Text = "Selectati un material pentru stergere.";
+                StatusText.Text = "Selectați un material pentru ștergere.";
                 return;
             }
 
-            if (MessageBox.Show($"Stergeti materialul {selected.Denumire}?", "Confirmare", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show($"Ștergeți materialul {selected.Denumire}?", "Confirmare", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             try
             {
                 _unitOfWork.MaterialRepository.Delete(selected);
                 await _unitOfWork.SaveChangesAsync();
+                StatusText.Text = "Materialul a fost șters.";
             }
             catch
             {
                 selected.Activ = false;
                 _unitOfWork.MaterialRepository.Update(selected);
                 await _unitOfWork.SaveChangesAsync();
-                MessageBox.Show("Materialul are date legate si a fost dezactivat in loc sa fie sters.", "Stergere", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Materialul are date legate și a fost dezactivat în loc să fie șters.", "Ștergere", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
+            ClearForm();
             await LoadMaterialeAsync();
         }
 
         private async void ReloadButton_Click(object sender, RoutedEventArgs e)
         {
             await LoadMaterialeAsync();
+        }
+
+        private void MaterialSearchInput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IsLoaded)
+                ApplyMaterialFilter();
+        }
+
+        private void ClearFormButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearForm();
+            MaterialeGrid.SelectedItem = null;
+            MaterialSearchInput.Clear();
+            ApplyMaterialFilter();
         }
 
         private void MaterialeGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -159,6 +199,16 @@ namespace CalculatorMateriale.Views
             UnitateInput.Text = material.Unitate;
             StocInput.Text = material.StocDisponibil.ToString();
             DensitateInput.Text = material.DensitateKgM3.ToString("0.##");
+        }
+
+        private void ClearForm()
+        {
+            DenumireInput.Clear();
+            TipInput.Clear();
+            PretInput.Clear();
+            UnitateInput.Clear();
+            StocInput.Clear();
+            DensitateInput.Clear();
         }
     }
 }

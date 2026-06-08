@@ -1,39 +1,40 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using CalculatorMateriale.Data;
 using CalculatorMateriale.Models;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CalculatorMateriale.Views
 {
     public partial class ComenziView : UserControl
     {
-        private IUnitOfWork _unitOfWork;
-        private ObservableCollection<Comanda> comenziCollection;
+        private IUnitOfWork? _unitOfWork;
+        private List<Comanda> _allOrders = new();
+        private ObservableCollection<Comanda> comenziCollection = new();
 
         public ComenziView()
         {
             InitializeComponent();
-            this.Loaded += ComenziView_Loaded;
+            Loaded += ComenziView_Loaded;
         }
 
-        private void ComenziView_Loaded(object sender, RoutedEventArgs e)
+        private async void ComenziView_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Get IUnitOfWork from dependency injection
                 _unitOfWork = Application.Current.Properties["UnitOfWork"] as IUnitOfWork;
-                
                 if (_unitOfWork == null)
                 {
                     MessageBox.Show("Serviciile nu sunt inițializate", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                LoadOrders();
+                await LoadClientsAsync();
+                await LoadOrdersAsync();
             }
             catch (Exception ex)
             {
@@ -41,16 +42,32 @@ namespace CalculatorMateriale.Views
             }
         }
 
-        private async void LoadOrders()
+        private async System.Threading.Tasks.Task LoadClientsAsync()
         {
+            if (_unitOfWork == null)
+                return;
+
+            var clients = (await _unitOfWork.ClientRepository.GetAllAsync())
+                .Where(c => c.Activ)
+                .OrderBy(c => c.Nume)
+                .ToList();
+
+            ClientCombo.ItemsSource = clients;
+            if (clients.Count > 0)
+                ClientCombo.SelectedIndex = 0;
+        }
+
+        private async System.Threading.Tasks.Task LoadOrdersAsync()
+        {
+            if (_unitOfWork == null)
+                return;
+
             try
             {
                 StatusBarText.Text = "Se încarcă comenzile...";
                 var orders = await _unitOfWork.ComandaRepository.GetAllAsync();
-                comenziCollection = new ObservableCollection<Comanda>(orders.OrderByDescending(c => c.DataComanda));
-                ComenziGrid.ItemsSource = comenziCollection;
-                RecordCountText.Text = $"Total: {comenziCollection.Count} comenzi";
-                StatusBarText.Text = "Gata";
+                _allOrders = orders.OrderByDescending(c => c.DataComanda).ToList();
+                ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -61,117 +78,245 @@ namespace CalculatorMateriale.Views
 
         private async void NewOrderButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_unitOfWork == null)
+                return;
+
             try
             {
-                var client = (await _unitOfWork.ClientRepository.GetAllAsync()).FirstOrDefault();
-                if (client == null)
-                {
-                    client = new Client { Nume = "Client comanda", CUI = DateTime.Now.ToString("HHmmssff"), Localitate = "Chisinau" };
-                    await _unitOfWork.ClientRepository.AddAsync(client);
-                    await _unitOfWork.SaveChangesAsync();
-                }
+                if (!TryReadOrderForm(out var order))
+                    return;
 
-                var next = ((await _unitOfWork.ComandaRepository.GetAllAsync()).Count() + 1);
-                var valoare = 2500m + (next * 475m);
-
-                await _unitOfWork.ComandaRepository.AddAsync(new Comanda
-                {
-                    IdClient = client.IdClient,
-                    DataComanda = DateTime.Now,
-                    DataLivrare = DateTime.Now.AddDays(3),
-                    Status = "Noua",
-                    ValoareTotala = valoare,
-                    TVA = decimal.Round(valoare * 0.20m, 2),
-                    Observatii = $"Comanda rapida #{next}"
-                });
+                await _unitOfWork.ComandaRepository.AddAsync(order);
                 await _unitOfWork.SaveChangesAsync();
-                LoadOrders();
+                ClearOrderForm();
+                await LoadOrdersAsync();
+                StatusBarText.Text = "Comanda a fost adăugată.";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare la creare comanda: {ex.Message}", "Noua Comanda", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Eroare la creare comandă: {ex.Message}", "Comandă nouă", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private async void UpdateOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_unitOfWork == null || ComenziGrid.SelectedItem is not Comanda selected)
+            {
+                StatusBarText.Text = "Selectați o comandă pentru actualizare.";
+                return;
+            }
+
+            if (!TryReadOrderForm(out var form))
+                return;
+
+            selected.IdClient = form.IdClient;
+            selected.DataLivrare = form.DataLivrare;
+            selected.Status = form.Status;
+            selected.ValoareTotala = form.ValoareTotala;
+            selected.TVA = form.TVA;
+
+            _unitOfWork.ComandaRepository.Update(selected);
+            await _unitOfWork.SaveChangesAsync();
+            await LoadOrdersAsync();
+            StatusBarText.Text = $"Comanda #{selected.IdComanda} a fost actualizată.";
         }
 
         private void EditOrderButton_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as Button)?.DataContext is Comanda comanda)
             {
-                MessageBox.Show($"Editare comandă {comanda.IdComanda} a clientului {comanda.IdClient}", "Editare", MessageBoxButton.OK, MessageBoxImage.Information);
+                ComenziGrid.SelectedItem = comanda;
+                FillOrderForm(comanda);
+                StatusBarText.Text = $"Editare comandă #{comanda.IdComanda}.";
             }
         }
 
         private async void DeleteOrderButton_Click(object sender, RoutedEventArgs e)
         {
-            if ((sender as Button)?.DataContext is Comanda comanda)
-            {
-                var result = MessageBox.Show($"Ești sigur că dorești să ștergi comanda {comanda.IdComanda}?",
-                    "Confirmare ștergere", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if ((sender as Button)?.DataContext is not Comanda comanda || _unitOfWork == null)
+                return;
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        _unitOfWork.ComandaRepository.Delete(comanda);
-                        await _unitOfWork.SaveChangesAsync();
-                        comenziCollection.Remove(comanda);
-                        RecordCountText.Text = $"Total: {comenziCollection.Count} comenzi";
-                        MessageBox.Show("Comandă ștearsă cu succes", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Eroare la ștergere: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
+            var result = MessageBox.Show(
+                $"Ești sigur că dorești să ștergi comanda {comanda.IdComanda}?",
+                "Confirmare ștergere",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                _unitOfWork.ComandaRepository.Delete(comanda);
+                await _unitOfWork.SaveChangesAsync();
+                await LoadOrdersAsync();
+                MessageBox.Show("Comandă ștearsă cu succes", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la ștergere: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async void ChangeStatusButton_Click(object sender, RoutedEventArgs e)
         {
-            if ((sender as Button)?.DataContext is Comanda comanda)
-            {
-                try
-                {
-                    // Status workflow: Noua -> Confirmata -> Finalizata -> Noua
-                    string currentStatus = comanda.Status ?? "Noua";
-                    string newStatus = currentStatus switch
-                    {
-                        "Noua" => "Confirmata",
-                        "Confirmata" => "Finalizata",
-                        "Finalizata" => "Noua",
-                        _ => "Noua"
-                    };
+            if ((sender as Button)?.DataContext is not Comanda comanda || _unitOfWork == null)
+                return;
 
-                    comanda.Status = newStatus;
-                    ComenziGrid.Items.Refresh();
-                    
-                    // Save to database
-                    _unitOfWork.ComandaRepository.Update(comanda);
-                    await _unitOfWork.SaveChangesAsync();
-                    
-                    MessageBox.Show($"Status schimbat în: {newStatus}", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex)
+            try
+            {
+                var currentStatus = comanda.Status ?? "Noua";
+                var newStatus = currentStatus switch
                 {
-                    MessageBox.Show($"Eroare la schimbarea status: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    "Noua" => "Confirmata",
+                    "Confirmata" => "Finalizata",
+                    "Finalizata" => "Noua",
+                    _ => "Noua"
+                };
+
+                comanda.Status = newStatus;
+                _unitOfWork.ComandaRepository.Update(comanda);
+                await _unitOfWork.SaveChangesAsync();
+                await LoadOrdersAsync();
+                StatusBarText.Text = $"Status schimbat în: {newStatus}.";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la schimbarea statusului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void ReportButton_Click(object sender, RoutedEventArgs e)
         {
-            var total = comenziCollection?.Count ?? 0;
-            var confirmate = comenziCollection?.Count(c => c.Status == "Confirmata") ?? 0;
-            var finalizate = comenziCollection?.Count(c => c.Status == "Finalizata") ?? 0;
-            var valoare = comenziCollection?.Sum(c => c.ValoareTotala) ?? 0;
+            var total = comenziCollection.Count;
+            var confirmate = comenziCollection.Count(c => c.Status == "Confirmata");
+            var finalizate = comenziCollection.Count(c => c.Status == "Finalizata");
+            var valoare = comenziCollection.Sum(c => c.ValoareTotala);
 
             MessageBox.Show(
-                $"Total comenzi: {total}\nConfirmate: {confirmate}\nFinalizate: {finalizate}\nValoare totala: {valoare:F2} MDL",
+                $"Total comenzi: {total}\nConfirmate: {confirmate}\nFinalizate: {finalizate}\nValoare totală: {valoare:F2} MDL",
                 "Raport Comenzi",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
+
+        private void Filter_Changed(object sender, EventArgs e)
+        {
+            if (IsLoaded)
+                ApplyFilters();
+        }
+
+        private void ResetFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchBox.Clear();
+            StatusFilter.SelectedIndex = 0;
+            DateFilter.SelectedDate = null;
+            ApplyFilters();
+        }
+
+        private void ComenziGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComenziGrid.SelectedItem is Comanda comanda)
+                FillOrderForm(comanda);
+        }
+
+        private void ApplyFilters()
+        {
+            var query = _allOrders.AsEnumerable();
+            var search = SearchBox?.Text?.Trim().ToLowerInvariant();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(c =>
+                    c.IdComanda.ToString().Contains(search) ||
+                    (c.Client?.Nume ?? string.Empty).ToLowerInvariant().Contains(search) ||
+                    (c.Observatii ?? string.Empty).ToLowerInvariant().Contains(search));
+            }
+
+            var status = (StatusFilter?.SelectedItem as ComboBoxItem)?.Tag?.ToString();
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(c => c.Status == status);
+
+            if (DateFilter?.SelectedDate is DateTime date)
+                query = query.Where(c => c.DataComanda.Date == date.Date || c.DataLivrare?.Date == date.Date);
+
+            comenziCollection = new ObservableCollection<Comanda>(query.OrderByDescending(c => c.DataComanda));
+            ComenziGrid.ItemsSource = comenziCollection;
+            RecordCountText.Text = $"Total: {comenziCollection.Count} comenzi";
+            StatusBarText.Text = "Gata";
+        }
+
+        private bool TryReadOrderForm(out Comanda order)
+        {
+            order = new Comanda();
+
+            if (ClientCombo.SelectedValue is not int clientId || clientId <= 0)
+            {
+                StatusBarText.Text = "Selectați clientul comenzii.";
+                return false;
+            }
+
+            if (!TryReadDecimal(ValoareInput.Text, out var valoare) || valoare <= 0)
+            {
+                StatusBarText.Text = "Valoarea comenzii trebuie să fie mai mare decât 0.";
+                return false;
+            }
+
+            decimal? tva;
+            if (string.IsNullOrWhiteSpace(TvaInput.Text))
+            {
+                tva = decimal.Round(valoare * 0.20m, 2);
+            }
+            else if (TryReadDecimal(TvaInput.Text, out var tvaValue) && tvaValue >= 0)
+            {
+                tva = tvaValue;
+            }
+            else
+            {
+                StatusBarText.Text = "TVA trebuie să fie un număr pozitiv.";
+                return false;
+            }
+
+            order.IdClient = clientId;
+            order.DataComanda = DateTime.Now;
+            order.DataLivrare = DataLivrareInput.SelectedDate;
+            order.Status = (OrderStatusInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Noua";
+            order.ValoareTotala = valoare;
+            order.TVA = tva;
+            return true;
+        }
+
+        private void FillOrderForm(Comanda comanda)
+        {
+            ClientCombo.SelectedValue = comanda.IdClient;
+            ValoareInput.Text = comanda.ValoareTotala.ToString("0.##");
+            TvaInput.Text = (comanda.TVA ?? 0).ToString("0.##");
+            DataLivrareInput.SelectedDate = comanda.DataLivrare;
+
+            foreach (ComboBoxItem item in OrderStatusInput.Items)
+            {
+                if (item.Content?.ToString() == comanda.Status)
+                {
+                    OrderStatusInput.SelectedItem = item;
+                    break;
+                }
+            }
+        }
+
+        private void ClearOrderForm()
+        {
+            ValoareInput.Clear();
+            TvaInput.Clear();
+            DataLivrareInput.SelectedDate = null;
+            OrderStatusInput.SelectedIndex = 0;
+            if (ClientCombo.Items.Count > 0)
+                ClientCombo.SelectedIndex = 0;
+        }
+
+        private static bool TryReadDecimal(string value, out decimal result)
+        {
+            return decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out result)
+                || decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
+        }
     }
 }
-
-
