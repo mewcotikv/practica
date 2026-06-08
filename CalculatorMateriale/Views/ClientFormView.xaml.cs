@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace CalculatorMateriale.Views
 {
@@ -8,6 +9,9 @@ namespace CalculatorMateriale.Views
     /// </summary>
     public partial class ClientFormView : UserControl
     {
+        public event System.EventHandler? SaveRequested;
+        public event System.EventHandler? CancelRequested;
+
         public ClientFormView()
         {
             InitializeComponent();
@@ -23,14 +27,7 @@ namespace CalculatorMateriale.Views
 
             if (isValid)
             {
-                System.Diagnostics.Debug.WriteLine("Form saved successfully!");
-                MessageBox.Show(
-                    "Datele clientului au fost salvate cu succes.",
-                    "Salvare",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                ClearForm();
+                SaveRequested?.Invoke(this, System.EventArgs.Empty);
             }
             else
             {
@@ -40,6 +37,11 @@ namespace CalculatorMateriale.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
+        }
+
+        private void AnuleazaButton_Click(object sender, RoutedEventArgs e)
+        {
+            CancelRequested?.Invoke(this, System.EventArgs.Empty);
         }
 
         /// <summary>
@@ -79,6 +81,25 @@ namespace CalculatorMateriale.Views
                 CUIErrorLabel.Visibility = Visibility.Collapsed;
             }
 
+            var telefon = TelefonTextBox.Text?.Trim() ?? string.Empty;
+            var digitsOnly = Regex.Replace(telefon, @"\D", string.Empty);
+            if (string.IsNullOrWhiteSpace(telefon))
+            {
+                TelefonErrorLabel.Text = "Telefonul este obligatoriu";
+                TelefonErrorLabel.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+            else if (!Regex.IsMatch(telefon, @"^[+]?[0-9\s\-()]+$") || digitsOnly.Length < 8)
+            {
+                TelefonErrorLabel.Text = "Introduceți un număr de telefon valid";
+                TelefonErrorLabel.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+            else
+            {
+                TelefonErrorLabel.Visibility = Visibility.Collapsed;
+            }
+
             return isValid;
         }
 
@@ -98,6 +119,7 @@ namespace CalculatorMateriale.Views
             // Clear error messages
             NumeErrorLabel.Visibility = Visibility.Collapsed;
             CUIErrorLabel.Visibility = Visibility.Collapsed;
+            TelefonErrorLabel.Visibility = Visibility.Collapsed;
 
             // Focus on first field
             NumeTextBox.Focus();

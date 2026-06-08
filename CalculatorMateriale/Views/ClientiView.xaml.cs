@@ -66,14 +66,19 @@ namespace CalculatorMateriale.Views
             if (_unitOfWork == null)
                 return;
 
-            var next = _clienti.Count + 1;
+            var formData = ShowClientDialog("Adaugă client");
+            if (formData == null)
+                return;
+
             var client = new Client
             {
-                Nume = $"Client nou {next}",
-                CUI = $"{10000000 + next}{_clienti.Count}",
-                Localitate = "Chisinau",
-                Telefon = "+373 22 000 000",
-                Email = $"client{next}@example.md"
+                Nume = formData["Nume"].Trim(),
+                CUI = formData["CUI"].Trim(),
+                Adresa = ToNullable(formData["Adresa"]),
+                Localitate = ToNullable(formData["Localitate"]),
+                CodPostal = ToNullable(formData["CodPostal"]),
+                Telefon = formData["Telefon"].Trim(),
+                Email = ToNullable(formData["Email"])
             };
 
             await _unitOfWork.ClientRepository.AddAsync(client);
@@ -89,10 +94,32 @@ namespace CalculatorMateriale.Views
                 return;
             }
 
-            client.Activ = !client.Activ;
+            var initialData = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "Nume", client.Nume },
+                { "CUI", client.CUI },
+                { "Adresa", client.Adresa ?? string.Empty },
+                { "Localitate", client.Localitate ?? string.Empty },
+                { "CodPostal", client.CodPostal ?? string.Empty },
+                { "Telefon", client.Telefon ?? string.Empty },
+                { "Email", client.Email ?? string.Empty }
+            };
+
+            var formData = ShowClientDialog("Editează client", initialData);
+            if (formData == null)
+                return;
+
+            client.Nume = formData["Nume"].Trim();
+            client.CUI = formData["CUI"].Trim();
+            client.Adresa = ToNullable(formData["Adresa"]);
+            client.Localitate = ToNullable(formData["Localitate"]);
+            client.CodPostal = ToNullable(formData["CodPostal"]);
+            client.Telefon = formData["Telefon"].Trim();
+            client.Email = ToNullable(formData["Email"]);
+
             _unitOfWork.ClientRepository.Update(client);
             await _unitOfWork.SaveChangesAsync();
-            ClientiDataGrid.Items.Refresh();
+            await LoadClientsAsync();
         }
 
         private async void DeleteClientButton_Click(object sender, RoutedEventArgs e)
@@ -133,11 +160,41 @@ namespace CalculatorMateriale.Views
                 ? clients
                 : clients.Where(c => c.Nume.ToLowerInvariant().Contains(search) ||
                                      c.CUI.ToLowerInvariant().Contains(search) ||
+                                     (c.Telefon ?? string.Empty).ToLowerInvariant().Contains(search) ||
                                      (c.Localitate ?? string.Empty).ToLowerInvariant().Contains(search));
 
             _clienti = new ObservableCollection<Client>(filtered.OrderBy(c => c.Nume));
             ClientiDataGrid.DataContext = _clienti;
             TotalClientsLabel.Text = _clienti.Count.ToString();
+        }
+
+        private System.Collections.Generic.Dictionary<string, string>? ShowClientDialog(
+            string title,
+            System.Collections.Generic.Dictionary<string, string>? initialData = null)
+        {
+            var form = new ClientFormView();
+            if (initialData != null)
+                form.SetFormData(initialData);
+
+            var dialog = new Window
+            {
+                Title = title,
+                Content = form,
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            form.SaveRequested += (_, _) => dialog.DialogResult = true;
+            form.CancelRequested += (_, _) => dialog.DialogResult = false;
+
+            return dialog.ShowDialog() == true ? form.GetFormData() : null;
+        }
+
+        private static string? ToNullable(string value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         }
     }
 }

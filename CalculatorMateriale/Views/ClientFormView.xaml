@@ -38,8 +38,9 @@
             </StackPanel>
 
             <StackPanel Margin="0,0,0,14">
-                <TextBlock Text="Telefon" Style="{StaticResource LabelTextBlockStyle}"/>
+                <TextBlock Text="Telefon *" Style="{StaticResource LabelTextBlockStyle}"/>
                 <TextBox x:Name="TelefonTextBox" Style="{StaticResource DefaultTextBoxStyle}" Height="36"/>
+                <TextBlock x:Name="TelefonErrorLabel" Style="{StaticResource ErrorTextBlockStyle}" Visibility="Collapsed"/>
             </StackPanel>
 
             <StackPanel Margin="0,0,0,20">
@@ -50,8 +51,8 @@
             <Border Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,0,0,20"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="AnulearButton" Content="Anulează" Style="{StaticResource OutlineButtonStyle}"
-                        Width="120" Margin="0,0,10,0"/>
+                <Button x:Name="AnuleazaButton" Content="Anulează" Style="{StaticResource OutlineButtonStyle}"
+                        Width="120" Margin="0,0,10,0" Click="AnuleazaButton_Click"/>
                 <Button x:Name="SalveazaButton" Content="Salvează" Style="{StaticResource PrimaryButtonStyle}"
                         Width="120" Click="SalveazaButton_Click"/>
             </StackPanel>
