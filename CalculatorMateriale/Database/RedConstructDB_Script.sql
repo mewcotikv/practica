@@ -1,8 +1,10 @@
 -- Create RedConstructDB Database
 CREATE DATABASE RedConstructDB;
+GO
 
 -- Use the database
 USE RedConstructDB;
+GO
 
 -- Create Client Table
 CREATE TABLE Client (
@@ -32,6 +34,7 @@ CREATE TABLE Obiectiv (
     DataCrearii DATETIME NOT NULL DEFAULT GETDATE(),
     DataFinalizarii DATETIME NULL,
     Status NVARCHAR(20) NULL DEFAULT 'Activ',
+    CONSTRAINT CK_Obiectiv_SuprafataM2 CHECK (SuprafataM2 > 0),
     CONSTRAINT FK_Obiectiv_Client FOREIGN KEY (IdClient) 
         REFERENCES Client(IdClient) 
         ON DELETE CASCADE 
@@ -77,7 +80,7 @@ CREATE TABLE CalculConsum (
         ON UPDATE CASCADE,
     CONSTRAINT FK_CalculConsum_Material FOREIGN KEY (IdMaterial) 
         REFERENCES Material(IdMaterial) 
-        ON DELETE RESTRICT 
+        ON DELETE NO ACTION
         ON UPDATE CASCADE
 );
 
@@ -118,7 +121,7 @@ CREATE TABLE DetaliiComanda (
         ON UPDATE CASCADE,
     CONSTRAINT FK_DetaliiComanda_Material FOREIGN KEY (IdMaterial) 
         REFERENCES Material(IdMaterial) 
-        ON DELETE RESTRICT 
+        ON DELETE NO ACTION
         ON UPDATE CASCADE
 );
 

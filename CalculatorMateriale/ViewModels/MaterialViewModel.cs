@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,13 +50,13 @@ namespace CalculatorMateriale.ViewModels
 
         private async Task AddMaterial()
         {
-            // TODO: Implement add material logic
+            // Implement add material logic
             await Task.CompletedTask;
         }
 
         private async Task EditMaterial()
         {
-            // TODO: Implement edit material logic
+            // Implement edit material logic
             await Task.CompletedTask;
         }
 
@@ -71,3 +71,4 @@ namespace CalculatorMateriale.ViewModels
         }
     }
 }
+

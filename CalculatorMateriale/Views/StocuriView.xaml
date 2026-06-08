@@ -1,0 +1,54 @@
+<UserControl x:Class="CalculatorMateriale.Views.StocuriView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="{StaticResource CanvasBrush}" Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="0,0,0,18">
+            <StackPanel>
+                <TextBlock Text="Stocuri materiale" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="Actualizează rapid cantitățile și urmărește materialele cu stoc scăzut."
+                           Style="{StaticResource SubtitleTextBlockStyle}"/>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBox x:Name="CantitateInput" Width="90" Height="36" Style="{StaticResource DefaultTextBoxStyle}" Text="10" Margin="0,0,8,0"/>
+                <Button Content="+ Stoc" Width="86" Height="36" Margin="0,0,8,0"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Click="AddStockButton_Click"/>
+                <Button Content="- Stoc" Width="86" Height="36" Margin="0,0,8,0"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Click="RemoveStockButton_Click"/>
+                <Button Content="Reîncarcă" Width="106" Height="36" Style="{StaticResource OutlineButtonStyle}" Click="ReloadButton_Click"/>
+            </StackPanel>
+        </DockPanel>
+
+        <DataGrid Grid.Row="1" x:Name="StocuriGrid" AutoGenerateColumns="False"
+                  CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+                  Style="{StaticResource DefaultDataGridStyle}">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding StocScazut}" Value="True">
+                            <Setter Property="Background" Value="#FFF3D0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Material" Binding="{Binding Denumire}" Width="2*"/>
+                <DataGridTextColumn Header="Tip" Binding="{Binding Tip}" Width="140"/>
+                <DataGridTextColumn Header="Stoc" Binding="{Binding StocDisponibil}" Width="90"/>
+                <DataGridTextColumn Header="Unitate" Binding="{Binding Unitate}" Width="90"/>
+                <DataGridTextColumn Header="Preț" Binding="{Binding Pret, StringFormat=F2}" Width="100"/>
+                <DataGridTextColumn Header="Valoare Stoc" Binding="{Binding ValoareStoc, StringFormat=F2}" Width="130"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding StatusStoc}" Width="130"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock Grid.Row="2" x:Name="StatusText" Text="Gata" Foreground="{StaticResource MutedInkBrush}" Margin="0,12,0,0"/>
+    </Grid>
+</UserControl>

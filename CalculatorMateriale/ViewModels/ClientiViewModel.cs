@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,19 +72,19 @@ namespace CalculatorMateriale.ViewModels
             }, _ => SelectedClient != null);
             SearchClientsCommand = new RelayCommand(_ => SearchClients());
 
-            // Încarcă clienții la inițializare
+            // ГЋncarcДѓ clienИ›ii la iniИ›ializare
             _ = LoadClientsAsync();
         }
 
         /// <summary>
-        /// Încarcă toți clienții din baza de date
+        /// ГЋncarcДѓ toИ›i clienИ›ii din baza de date
         /// </summary>
         private async Task LoadClientsAsync()
         {
             try
             {
                 IsLoading = true;
-                _logger.LogInformation("Se încarcă clienții din baza de date...");
+                _logger.LogInformation("Se Г®ncarcДѓ clienИ›ii din baza de date...");
 
                 var clientiList = await _unitOfWork.ClientRepository.GetAllAsync();
                 Clienti.Clear();
@@ -94,11 +94,11 @@ namespace CalculatorMateriale.ViewModels
                     Clienti.Add(client);
                 }
 
-                _logger.LogInformation($"S-au încărcat cu succes {Clienti.Count} clienți");
+                _logger.LogInformation($"S-au Г®ncДѓrcat cu succes {Clienti.Count} clienИ›i");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Eroare la încărcarea clienților: {ex.Message}");
+                _logger.LogError($"Eroare la Г®ncДѓrcarea clienИ›ilor: {ex.Message}");
             }
             finally
             {
@@ -107,7 +107,7 @@ namespace CalculatorMateriale.ViewModels
         }
 
         /// <summary>
-        /// Caută clienți după nume sau CUI
+        /// CautДѓ clienИ›i dupДѓ nume sau CUI
         /// </summary>
         private void SearchClients()
         {
@@ -115,7 +115,7 @@ namespace CalculatorMateriale.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(SearchText))
                 {
-                    // Reîncarcă toți clienții dacă textul de căutare este gol
+                    // ReГ®ncarcДѓ toИ›i clienИ›ii dacДѓ textul de cДѓutare este gol
                     _ = LoadClientsAsync();
                     return;
                 }
@@ -133,36 +133,35 @@ namespace CalculatorMateriale.ViewModels
                     Clienti.Add(client);
                 }
 
-                _logger.LogInformation($"Căutare: găsit {filtered.Count} clienți pentru '{SearchText}'");
+                _logger.LogInformation($"CДѓutare: gДѓsit {filtered.Count} clienИ›i pentru '{SearchText}'");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Eroare la căutarea clienților: {ex.Message}");
+                _logger.LogError($"Eroare la cДѓutarea clienИ›ilor: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Adaugă un nou client
+        /// AdaugДѓ un nou client
         /// </summary>
         private void AddClient()
         {
             try
             {
-                _logger.LogInformation("Se deschide formularul pentru adăugarea unui nou client");
-                MessageBox.Show("Formularul pentru adăugarea unui nou client va fi deschis.", 
-                               "Adaugă Client", MessageBoxButton.OK, MessageBoxImage.Information);
-                // TODO: Deschide ClientFormView pentru adăugare
-                // Aceasta va fi implementată la integrarea cu MainWindow
+                _logger.LogInformation("Se deschide formularul pentru adДѓugarea unui nou client");
+                MessageBox.Show("Formularul pentru adДѓugarea unui nou client va fi deschis.", 
+                               "AdaugДѓ Client", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Deschide ClientFormView pentru adДѓugare
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Eroare la adăugarea clientului: {ex.Message}");
-                MessageBox.Show($"Eroare: {ex.Message}", "Adaugă Client", MessageBoxButton.OK, MessageBoxImage.Error);
+                _logger.LogError($"Eroare la adДѓugarea clientului: {ex.Message}");
+                MessageBox.Show($"Eroare: {ex.Message}", "AdaugДѓ Client", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         /// <summary>
-        /// Editează clientul selectat
+        /// EditeazДѓ clientul selectat
         /// </summary>
         private void EditClient()
         {
@@ -172,8 +171,7 @@ namespace CalculatorMateriale.ViewModels
             try
             {
                 _logger.LogInformation($"Se deschide formularul pentru editarea clientului: {SelectedClient.Nume}");
-                // TODO: Deschide ClientFormView cu datele clientului selectat
-                // Aceasta va fi implementată la integrarea cu MainWindow
+                // Deschide ClientFormView cu datele clientului selectat
             }
             catch (Exception ex)
             {
@@ -182,14 +180,14 @@ namespace CalculatorMateriale.ViewModels
         }
 
         /// <summary>
-        /// Șterge clientul selectat cu confirmare
+        /// Иterge clientul selectat cu confirmare
         /// </summary>
         private async Task DeleteClientAsync()
         {
             if (SelectedClient == null)
             {
-                MessageBox.Show("Selectați un client pentru a-l șterge.", 
-                               "Ștergere Client", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("SelectaИ›i un client pentru a-l И™terge.", 
+                               "Иtergere Client", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -197,41 +195,41 @@ namespace CalculatorMateriale.ViewModels
             {
                 var clientName = SelectedClient.Nume;
                 
-                // Afișează dialog de confirmare
+                // AfiИ™eazДѓ dialog de confirmare
                 var result = MessageBox.Show(
-                    $"Sunteți sigur că doriți să ștergeți clientul \"{clientName}\"?\n\nAceastă acțiune nu poate fi anulată.",
-                    "Confirmare Ștergere",
+                    $"SunteИ›i sigur cДѓ doriИ›i sДѓ И™tergeИ›i clientul \"{clientName}\"?\n\nAceastДѓ acИ›iune nu poate fi anulatДѓ.",
+                    "Confirmare Иtergere",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question,
                     MessageBoxResult.No);
 
                 if (result != MessageBoxResult.Yes)
                 {
-                    _logger.LogInformation($"Ștergerea clientului {clientName} a fost anulată de utilizator");
+                    _logger.LogInformation($"Иtergerea clientului {clientName} a fost anulatДѓ de utilizator");
                     return;
                 }
 
-                _logger.LogInformation($"Se șterge clientul: {clientName}");
+                _logger.LogInformation($"Se И™terge clientul: {clientName}");
 
                 _unitOfWork.ClientRepository.Delete(SelectedClient);
                 await _unitOfWork.SaveChangesAsync();
 
                 await LoadClientsAsync();
-                _logger.LogInformation($"Clientul {clientName} a fost șters cu succes");
+                _logger.LogInformation($"Clientul {clientName} a fost И™ters cu succes");
                 
-                MessageBox.Show($"Clientul \"{clientName}\" a fost șters cu succes.",
-                               "Ștergere Client", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Clientul \"{clientName}\" a fost И™ters cu succes.",
+                               "Иtergere Client", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Eroare la ștergerea clientului: {ex.Message}");
-                MessageBox.Show($"Eroare la ștergerea clientului: {ex.Message}",
-                               "Ștergere Client", MessageBoxButton.OK, MessageBoxImage.Error);
+                _logger.LogError($"Eroare la И™tergerea clientului: {ex.Message}");
+                MessageBox.Show($"Eroare la И™tergerea clientului: {ex.Message}",
+                               "Иtergere Client", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         /// <summary>
-        /// Adaugă un client la colecție (utilizat din formular)
+        /// AdaugДѓ un client la colecИ›ie (utilizat din formular)
         /// </summary>
         public async Task AddClientToCollectionAsync(Client client)
         {
@@ -240,13 +238,13 @@ namespace CalculatorMateriale.ViewModels
                 if (client == null)
                     return;
 
-                _logger.LogInformation($"Se adaugă clientul: {client.Nume}");
+                _logger.LogInformation($"Se adaugДѓ clientul: {client.Nume}");
 
                 await _unitOfWork.ClientRepository.AddAsync(client);
                 await _unitOfWork.SaveChangesAsync();
 
                 await LoadClientsAsync();
-                _logger.LogInformation($"Clientul {client.Nume} a fost adăugat cu succes");
+                _logger.LogInformation($"Clientul {client.Nume} a fost adДѓugat cu succes");
             }
             catch (Exception ex)
             {
@@ -255,7 +253,7 @@ namespace CalculatorMateriale.ViewModels
         }
 
         /// <summary>
-        /// Actualizează clientul (utilizat din formular)
+        /// ActualizeazДѓ clientul (utilizat din formular)
         /// </summary>
         public async Task UpdateClientAsync(Client client)
         {
@@ -264,7 +262,7 @@ namespace CalculatorMateriale.ViewModels
                 if (client == null)
                     return;
 
-                _logger.LogInformation($"Se actualizează clientul: {client.Nume}");
+                _logger.LogInformation($"Se actualizeazДѓ clientul: {client.Nume}");
 
                 _unitOfWork.ClientRepository.Update(client);
                 await _unitOfWork.SaveChangesAsync();
@@ -279,3 +277,5 @@ namespace CalculatorMateriale.ViewModels
         }
     }
 }
+
+

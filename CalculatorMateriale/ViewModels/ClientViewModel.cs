@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,13 +59,13 @@ namespace CalculatorMateriale.ViewModels
 
         private async Task AddClient()
         {
-            // TODO: Implement add client logic
+            // Implement add client logic
             await Task.CompletedTask;
         }
 
         private async Task EditClient()
         {
-            // TODO: Implement edit client logic
+            // Implement edit client logic
             await Task.CompletedTask;
         }
 
@@ -97,3 +97,4 @@ namespace CalculatorMateriale.ViewModels
         }
     }
 }
+

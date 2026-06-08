@@ -1,0 +1,132 @@
+<UserControl x:Class="CalculatorMateriale.Views.DevizView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid Background="{StaticResource CanvasBrush}" Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="Deviz și export" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="Calculează devizul, apoi exportă în PDF sau Excel."
+                       Style="{StaticResource SubtitleTextBlockStyle}"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <TextBlock Text="Denumire client" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox x:Name="ClientInput" Height="36" Style="{StaticResource DefaultTextBoxStyle}" Text="RED Construct SRL"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="0,0,20,0">
+                    <TextBlock Text="Denumire proiect" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <TextBox x:Name="ProiectInput" Height="36" Style="{StaticResource DefaultTextBoxStyle}" Text="Izolație termică clădire"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Data deviz" Style="{StaticResource LabelTextBlockStyle}"/>
+                    <DatePicker x:Name="DataDevizPicker" Height="36"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource CardBorderStyle}">
+            <StackPanel>
+                <TextBlock Text="Materiale și calcule" FontSize="15" FontWeight="Bold" Margin="0,0,0,14"/>
+
+                <Grid Margin="0,0,0,14" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="MaterialInput" Style="{StaticResource DefaultTextBoxStyle}" Margin="0,0,10,0" Text="Material..."/>
+                    <TextBox x:Name="SuprafataDevizInput" Grid.Column="1" Style="{StaticResource DefaultTextBoxStyle}" Margin="0,0,10,0" Text="100"/>
+                    <TextBox x:Name="PretUnitarDevizInput" Grid.Column="2" Style="{StaticResource DefaultTextBoxStyle}" Margin="0,0,10,0" Text="150"/>
+                    <Button Grid.Column="3" Content="Adaugă" Style="{StaticResource PrimaryButtonStyle}" Click="AddMaterialButton_Click"/>
+                </Grid>
+
+                <DataGrid x:Name="MaterialsGrid" Height="250" AutoGenerateColumns="False"
+                          Style="{StaticResource DefaultDataGridStyle}" CanUserAddRows="False" Margin="0,0,0,15">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Material" Binding="{Binding Material}" Width="*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Suprafață (m²)" Binding="{Binding Suprafata}" Width="120" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Consum" Binding="{Binding Consum, StringFormat=F2}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Preț unitar" Binding="{Binding PretUnitar, StringFormat=F2}" Width="120" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding PretTotal, StringFormat=F2}" Width="120" IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="3" Margin="0,18,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="430"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}" Margin="0,0,18,0">
+                <StackPanel>
+                    <TextBlock Text="Export deviz" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <TextBlock Text="PDF-ul este potrivit pentru trimitere către client. Excel-ul este util pentru verificări și editări rapide."
+                               Style="{StaticResource BodyTextBlockStyle}"/>
+                    <TextBlock x:Name="ExportStatusText" Text="Pregătit pentru export" Foreground="{StaticResource MutedInkBrush}" Margin="0,12,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Column="1">
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Rezumat deviz" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,7">
+                            <TextBlock Text="Total materiale:" FontSize="12" Width="140"/>
+                            <TextBlock x:Name="TotalMateriale" Text="0.00 MDL" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryRedBrush}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,7">
+                            <TextBlock Text="Manoperă (35%):" FontSize="12" Width="140"/>
+                            <TextBlock x:Name="TotalManopera" Text="0.00 MDL" FontSize="12" FontWeight="Bold" Foreground="#B26B00"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,7">
+                            <TextBlock Text="Subtotal:" FontSize="12" Width="140" FontWeight="Bold"/>
+                            <TextBlock x:Name="Subtotal" Text="0.00 MDL" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryRedBrush}"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource HorizontalSeparatorStyle}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,7">
+                            <TextBlock Text="TVA (20%):" FontSize="12" Width="140"/>
+                            <TextBlock x:Name="TotalTVA" Text="0.00 MDL" FontSize="12" FontWeight="Bold" Foreground="#B26B00"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,7">
+                            <TextBlock Text="TOTAL FINAL:" FontSize="12" Width="140" FontWeight="Bold" Foreground="{StaticResource PrimaryRedBrush}"/>
+                            <TextBlock x:Name="TotalFinal" Text="0.00 MDL" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryRedBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                    <Button Content="Calculează" Height="40" Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="0,0,10,0" Click="CalculateButton_Click" Width="130"/>
+                    <Button Content="Export PDF" Height="40" Style="{StaticResource PrimaryButtonStyle}"
+                            Margin="0,0,10,0" Click="ExportPDFButton_Click" Width="130"/>
+                    <Button Content="Export Excel" Height="40" Style="{StaticResource OutlineButtonStyle}"
+                            Click="ExportExcelButton_Click" Width="140"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using CalculatorMateriale.Models;
 
 namespace CalculatorMateriale.Data
@@ -17,6 +18,7 @@ namespace CalculatorMateriale.Data
         IRepository<DetaliiComanda> DetaliiComandaRepository { get; }
 
         Task SaveChangesAsync();
+        Task ExecuteInTransactionAsync(Func<Task> operation);
     }
 
     public class UnitOfWork : IUnitOfWork
@@ -44,6 +46,22 @@ namespace CalculatorMateriale.Data
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task ExecuteInTransactionAsync(Func<Task> operation)
+        {
+            await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await operation();
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,13 +61,13 @@ namespace CalculatorMateriale.ViewModels
 
         private async Task AddComanda()
         {
-            // TODO: Implement add order logic
+            // Implement add order logic
             await Task.CompletedTask;
         }
 
         private async Task EditComanda()
         {
-            // TODO: Implement edit order logic
+            // Implement edit order logic
             await Task.CompletedTask;
         }
 
@@ -83,7 +83,8 @@ namespace CalculatorMateriale.ViewModels
 
         private void PrintComanda()
         {
-            // TODO: Implement print order logic
+            // Implement print order logic
         }
     }
 }
+

@@ -48,6 +48,7 @@
   <ItemGroup>
     <!-- Entity Framework Core -->
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -70,6 +71,7 @@
 
     <!-- Export Excel -->
     <PackageReference Include="NPOI" Version="2.7.1" />
+    <PackageReference Include="ClosedXML" Version="0.102.3" />
     
     <!-- PDF Generation - QuestPDF (Free, Modern) -->
     <PackageReference Include="QuestPDF" Version="2024.3.0" />

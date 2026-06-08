@@ -1,0 +1,40 @@
+<Window x:Class="CalculatorMateriale.SplashScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="RED Construct" 
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="#D71920"
+        Height="400"
+        Width="600"
+        AllowsTransparency="False"
+        ShowInTaskbar="False"
+        Topmost="True">
+    <Grid Background="#D71920">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid Width="96" Height="78" Margin="0,0,0,22">
+                <Border Width="88" Height="58" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                        Background="#2A2A2A" CornerRadius="5"/>
+                <Polygon Points="8,44 48,10 88,44" Fill="#F4B000" Stroke="White" StrokeThickness="3"/>
+                <Rectangle Width="24" Height="26" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,8"/>
+            </Grid>
+            <!-- Logo/Title -->
+            <TextBlock Text="🏗️" FontSize="80" TextAlignment="Center" Margin="0,0,0,20"/>
+            
+            <TextBlock Text="RED CONSTRUCT" FontSize="36" FontWeight="Bold" 
+                       Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
+            
+            <TextBlock Text="Calculator Materiale Termoizolație" FontSize="14" 
+                       Foreground="#E3F2FD" TextAlignment="Center" Margin="0,0,0,40"/>
+            
+            <!-- Progress Bar -->
+            <ProgressBar x:Name="LoadingBar" Height="8" Width="300" 
+                        Foreground="#F4B000" Background="#A90F16" 
+                        Margin="0,0,0,15"/>
+            
+            <!-- Status Text -->
+            <TextBlock x:Name="StatusText" Text="Se inițializează..." FontSize="12" 
+                       Foreground="#FFF3D0" TextAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,75 @@
+<UserControl x:Class="CalculatorMateriale.Views.MaterialeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="{StaticResource CanvasBrush}" Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="Gestionare materiale" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="Adaugă, actualizează și urmărește materialele disponibile."
+                       Style="{StaticResource SubtitleTextBlockStyle}"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="DenumireInput" Grid.Column="0" Height="36" Margin="0,0,8,0"
+                         Style="{StaticResource DefaultTextBoxStyle}" Text="Polistiren EPS 100mm"/>
+                <TextBox x:Name="TipInput" Grid.Column="1" Height="36" Margin="0,0,8,0"
+                         Style="{StaticResource DefaultTextBoxStyle}" Text="Polistiren"/>
+                <TextBox x:Name="PretInput" Grid.Column="2" Height="36" Margin="0,0,8,0"
+                         Style="{StaticResource DefaultTextBoxStyle}" Text="45.50"/>
+                <TextBox x:Name="UnitateInput" Grid.Column="3" Height="36" Margin="0,0,8,0"
+                         Style="{StaticResource DefaultTextBoxStyle}" Text="buc"/>
+                <TextBox x:Name="StocInput" Grid.Column="4" Height="36" Margin="0,0,8,0"
+                         Style="{StaticResource DefaultTextBoxStyle}" Text="100"/>
+                <TextBox x:Name="DensitateInput" Grid.Column="5" Height="36" Margin="0,0,8,0"
+                         Style="{StaticResource DefaultTextBoxStyle}" Text="35"/>
+                <StackPanel Grid.Column="6" Orientation="Horizontal">
+                    <Button Content="Adaugă" Width="86" Height="36" Margin="0,0,6,0"
+                            Style="{StaticResource PrimaryButtonStyle}" Click="AddButton_Click"/>
+                    <Button Content="Actualizează" Width="112" Height="36"
+                            Style="{StaticResource SecondaryButtonStyle}" Click="UpdateButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <DataGrid Grid.Row="2" x:Name="MaterialeGrid" AutoGenerateColumns="False"
+                  CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+                  Style="{StaticResource DefaultDataGridStyle}" SelectionChanged="MaterialeGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding IdMaterial}" Width="60"/>
+                <DataGridTextColumn Header="Denumire" Binding="{Binding Denumire}" Width="2*"/>
+                <DataGridTextColumn Header="Tip" Binding="{Binding Tip}" Width="130"/>
+                <DataGridTextColumn Header="Preț" Binding="{Binding Pret, StringFormat=F2}" Width="90"/>
+                <DataGridTextColumn Header="Unitate" Binding="{Binding Unitate}" Width="90"/>
+                <DataGridTextColumn Header="Stoc" Binding="{Binding StocDisponibil}" Width="90"/>
+                <DataGridTextColumn Header="Densitate" Binding="{Binding DensitateKgM3}" Width="100"/>
+                <DataGridTextColumn Header="Activ" Binding="{Binding Activ}" Width="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DockPanel Grid.Row="3" Margin="0,12,0,0">
+            <TextBlock x:Name="StatusText" Text="Gata" Foreground="{StaticResource MutedInkBrush}" VerticalAlignment="Center"/>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Șterge" Width="90" Height="34" Margin="0,0,8,0"
+                        Style="{StaticResource OutlineButtonStyle}" Click="DeleteButton_Click"/>
+                <Button Content="Reîncarcă" Width="104" Height="34" Style="{StaticResource SecondaryButtonStyle}" Click="ReloadButton_Click"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</UserControl>

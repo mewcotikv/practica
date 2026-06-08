@@ -1,8 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using CalculatorMateriale.Data;
+using CalculatorMateriale.Views;
 
 namespace CalculatorMateriale
 {
@@ -13,10 +17,18 @@ namespace CalculatorMateriale
     {
         private ILogger<MainWindow>? _logger;
         private string _currentPage = "Dashboard";
+        private IServiceProvider? _serviceProvider;
+        private IUnitOfWork? _unitOfWork;
 
-        public MainWindow()
+        public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            _serviceProvider = serviceProvider;
+            _unitOfWork = serviceProvider?.GetService<IUnitOfWork>();
+            
+            // Store UnitOfWork in Application properties for child views
+            Application.Current.Properties["UnitOfWork"] = _unitOfWork;
+            
             this.Loaded += MainWindow_Loaded;
         }
 
@@ -34,6 +46,7 @@ namespace CalculatorMateriale
 
             LogMessage("MainWindow loaded successfully");
             ShowDashboard();
+            WireTopBarButtons();
         }
 
         /// <summary>
@@ -69,6 +82,9 @@ namespace CalculatorMateriale
                     case "Proiecte":
                         ShowProjectsPage();
                         break;
+                    case "DevizExport":
+                        ShowExportPage();
+                        break;
                     case "Rapoarte":
                         ShowReportsPage();
                         break;
@@ -101,15 +117,8 @@ namespace CalculatorMateriale
         private void ShowClientPage()
         {
             DashboardPlaceholder.Visibility = Visibility.Collapsed;
-            var content = new TextBlock
-            {
-                Text = "📋 Pagina Clienți\n\nFuncționalitate: Gestionare clienți (CRUD)\n- Adăugare clienți\n- Editare date\n- Ștergere\n- Căutare după CUI sau nume",
-                Foreground = System.Windows.Media.Brushes.Black,
-                FontSize = 14,
-                Margin = new Thickness(20),
-                TextWrapping = TextWrapping.Wrap
-            };
-            ContentFrame.Content = content;
+            var clientiView = new ClientiView();
+            ContentFrame.Content = clientiView;
             LogMessage("Client page displayed");
         }
 
@@ -119,15 +128,7 @@ namespace CalculatorMateriale
         private void ShowMaterialPage()
         {
             DashboardPlaceholder.Visibility = Visibility.Collapsed;
-            var content = new TextBlock
-            {
-                Text = "📦 Pagina Materiale\n\nFuncționalitate: Gestionare materiale termoizolante\n- Adăugare materiale\n- Configurare proprietăți izolante\n- Gestionare prețuri\n- Monitorizare stoc",
-                Foreground = System.Windows.Media.Brushes.Black,
-                FontSize = 14,
-                Margin = new Thickness(20),
-                TextWrapping = TextWrapping.Wrap
-            };
-            ContentFrame.Content = content;
+            ContentFrame.Content = new MaterialeView();
             LogMessage("Material page displayed");
         }
 
@@ -137,15 +138,8 @@ namespace CalculatorMateriale
         private void ShowOrderPage()
         {
             DashboardPlaceholder.Visibility = Visibility.Collapsed;
-            var content = new TextBlock
-            {
-                Text = "📋 Pagina Comenzi\n\nFuncționalitate: Gestionare comenzi\n- Creare comenzi noi\n- Editare comenzi\n- Urmărire stare\n- Calcul valoare\n- Generare facturi",
-                Foreground = System.Windows.Media.Brushes.Black,
-                FontSize = 14,
-                Margin = new Thickness(20),
-                TextWrapping = TextWrapping.Wrap
-            };
-            ContentFrame.Content = content;
+            var comenziView = new ComenziView();
+            ContentFrame.Content = comenziView;
             LogMessage("Order page displayed");
         }
 
@@ -155,15 +149,8 @@ namespace CalculatorMateriale
         private void ShowCalculationsPage()
         {
             DashboardPlaceholder.Visibility = Visibility.Collapsed;
-            var content = new TextBlock
-            {
-                Text = "🧮 Pagina Calcule\n\nFuncționalitate: Calcule consum materiale\n- Calculator consum pe bază de suprafață\n- Calcul densitate/greutate\n- Estimare costuri\n- Tabele cu coeficienți izolație",
-                Foreground = System.Windows.Media.Brushes.Black,
-                FontSize = 14,
-                Margin = new Thickness(20),
-                TextWrapping = TextWrapping.Wrap
-            };
-            ContentFrame.Content = content;
+            var calculatorView = new CalculatorView();
+            ContentFrame.Content = calculatorView;
             LogMessage("Calculations page displayed");
         }
 
@@ -173,16 +160,15 @@ namespace CalculatorMateriale
         private void ShowProjectsPage()
         {
             DashboardPlaceholder.Visibility = Visibility.Collapsed;
-            var content = new TextBlock
-            {
-                Text = "🏗️ Pagina Proiecte\n\nFuncționalitate: Gestionare proiecte/obiective\n- Creare proiecte\n- Asociere la clienți\n- Urmărire progres\n- Linkare cu comenzi",
-                Foreground = System.Windows.Media.Brushes.Black,
-                FontSize = 14,
-                Margin = new Thickness(20),
-                TextWrapping = TextWrapping.Wrap
-            };
-            ContentFrame.Content = content;
+            ContentFrame.Content = new ObiectiveView();
             LogMessage("Projects page displayed");
+        }
+
+        private void ShowExportPage()
+        {
+            DashboardPlaceholder.Visibility = Visibility.Collapsed;
+            ContentFrame.Content = new DevizView();
+            LogMessage("Quote and export page displayed");
         }
 
         /// <summary>
@@ -191,15 +177,7 @@ namespace CalculatorMateriale
         private void ShowReportsPage()
         {
             DashboardPlaceholder.Visibility = Visibility.Collapsed;
-            var content = new TextBlock
-            {
-                Text = "📈 Pagina Rapoarte Vânzări\n\nFuncționalitate: Analiza și rapoarte\n- Rapoarte pe perioadă\n- Top materiale vândute\n- Analiză revenue\n- Grafice și statistici",
-                Foreground = System.Windows.Media.Brushes.Black,
-                FontSize = 14,
-                Margin = new Thickness(20),
-                TextWrapping = TextWrapping.Wrap
-            };
-            ContentFrame.Content = content;
+            ContentFrame.Content = new RapoarteView();
             LogMessage("Reports page displayed");
         }
 
@@ -209,15 +187,7 @@ namespace CalculatorMateriale
         private void ShowInventoryPage()
         {
             DashboardPlaceholder.Visibility = Visibility.Collapsed;
-            var content = new TextBlock
-            {
-                Text = "📉 Pagina Stocuri\n\nFuncționalitate: Monitorizare stocuri\n- Nivel stoc curent\n- Alerte stoc minim\n- Istoric mișcări stoc\n- Recomandări reaprovizionare",
-                Foreground = System.Windows.Media.Brushes.Black,
-                FontSize = 14,
-                Margin = new Thickness(20),
-                TextWrapping = TextWrapping.Wrap
-            };
-            ContentFrame.Content = content;
+            ContentFrame.Content = new StocuriView();
             LogMessage("Inventory page displayed");
         }
 
@@ -227,11 +197,8 @@ namespace CalculatorMateriale
         private void ExportToExcel(object sender, RoutedEventArgs e)
         {
             LogMessage("Export to Excel initiated");
-            MessageBox.Show(
-                "Funcția Export Excel va fi implementată.\n\nVa folosi NPOI pentru a genera fișiere .xlsx din datele curente.",
-                "Export Excel",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            DashboardPlaceholder.Visibility = Visibility.Collapsed;
+            ContentFrame.Content = new RapoarteView();
         }
 
         /// <summary>
@@ -240,11 +207,8 @@ namespace CalculatorMateriale
         private void ExportToPDF(object sender, RoutedEventArgs e)
         {
             LogMessage("Export to PDF initiated");
-            MessageBox.Show(
-                "Funcția Export PDF va fi implementată.\n\nVa folosi QuestPDF pentru a genera documente PDF profesionale.",
-                "Export PDF",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            DashboardPlaceholder.Visibility = Visibility.Collapsed;
+            ContentFrame.Content = new DevizView();
         }
 
         /// <summary>
@@ -252,39 +216,26 @@ namespace CalculatorMateriale
         /// </summary>
         private void UpdateMenuButtonStates(Button selectedButton)
         {
-            // Find all buttons in the sidebar
-            var buttons = FindLogicalChildren<Button>(this);
+            var buttons = new[]
+            {
+                BtnDashboard,
+                BtnClienti,
+                BtnMateriale,
+                BtnComenzi,
+                BtnCalcule,
+                BtnProiecte,
+                BtnDevizExport
+            };
+
             foreach (var btn in buttons)
             {
-                if (btn.Style?.TargetType.Name == "Button" && 
-                    (string?)btn.Tag is string tag && 
-                    tag != "Rapoarte" && tag != "Stocuri") // Skip export buttons
-                {
-                    // Could add selection highlight here if needed
-                }
-            }
-        }
-
-        /// <summary>
-        /// Helper method to find all logical children of a specific type
-        /// </summary>
-        private IEnumerable<T> FindLogicalChildren<T>(DependencyObject parent) where T : DependencyObject
-        {
-            if (parent == null)
-                yield break;
-
-            var children = LogicalTreeHelper.GetChildren(parent);
-            foreach (var child in children)
-            {
-                if (child is T typedChild)
-                    yield return typedChild;
-
-                // Only recurse if child is a DependencyObject to avoid infinite recursion
-                if (child is DependencyObject depObj)
-                {
-                    foreach (var grandChild in FindLogicalChildren<T>(depObj))
-                        yield return grandChild;
-                }
+                var isSelected = btn == selectedButton;
+                btn.Background = isSelected
+                    ? new SolidColorBrush(Color.FromRgb(178, 107, 0))
+                    : Brushes.Transparent;
+                btn.Foreground = isSelected
+                    ? Brushes.White
+                    : Brushes.White;
             }
         }
 
@@ -296,5 +247,52 @@ namespace CalculatorMateriale
             System.Diagnostics.Debug.WriteLine($"[MainWindow] {message}");
             _logger?.LogInformation($"{message}");
         }
+
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(
+                "RED Construct Calculator\nAplicatie pentru materiale, stocuri, comenzi, calcule si rapoarte.",
+                "Despre", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Setarile sunt pregatite pentru extindere. Baza activa: SQLite local.", "Setari",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void WireTopBarButtons()
+        {
+            foreach (var button in FindVisualChildren<Button>(this))
+            {
+                var content = button.Content?.ToString() ?? string.Empty;
+                if (content.Contains("Set"))
+                    button.Click += SettingsButton_Click;
+                else if (content.Contains("Ie") || content.Contains("Ies"))
+                    button.Click += ExitButton_Click;
+            }
+        }
+
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null)
+                yield break;
+
+            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T typedChild)
+                    yield return typedChild;
+
+                foreach (var nestedChild in FindVisualChildren<T>(child))
+                    yield return nestedChild;
+            }
+        }
     }
 }
+

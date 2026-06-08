@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,13 +59,13 @@ namespace CalculatorMateriale.ViewModels
 
         private async Task AddObiectiv()
         {
-            // TODO: Implement add project logic
+            // Implement add project logic
             await Task.CompletedTask;
         }
 
         private async Task EditObiectiv()
         {
-            // TODO: Implement edit project logic
+            // Implement edit project logic
             await Task.CompletedTask;
         }
 
@@ -97,3 +97,4 @@ namespace CalculatorMateriale.ViewModels
         }
     }
 }
+

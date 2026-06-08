@@ -1,0 +1,166 @@
+<UserControl x:Class="CalculatorMateriale.Views.CalculatorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <Grid Background="{StaticResource CanvasBrush}" Margin="24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="340"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Margin="0,0,20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="0,0,0,18">
+                <TextBlock Text="Calculator materiale termoizolație" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="Calculează consumul și costurile pe baza suprafeței, tipului de material și prețului unitar."
+                           Style="{StaticResource SubtitleTextBlockStyle}"/>
+            </StackPanel>
+
+            <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,12,12">
+                        <TextBlock Text="Suprafață (m²)" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <TextBox x:Name="SuprafataInput" Text="100" Height="36" Style="{StaticResource DefaultTextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,12,12">
+                        <TextBlock Text="Tip material" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <ComboBox x:Name="TipMaterialCombo" Height="36" Style="{StaticResource DefaultComboBoxStyle}" SelectionChanged="TipMaterial_SelectionChanged">
+                            <ComboBoxItem Content="Caparol" IsSelected="True"/>
+                            <ComboBoxItem Content="EPS-80"/>
+                            <ComboBoxItem Content="Polistiren Extrudat Gias"/>
+                            <ComboBoxItem Content="Alt Material"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="0,0,12,12">
+                        <TextBlock x:Name="GrosimeLabel" Text="Grosime" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <ComboBox x:Name="GrosimePolistirenCombo" Height="36" Style="{StaticResource DefaultComboBoxStyle}">
+                            <ComboBoxItem Content="50 mm"/>
+                            <ComboBoxItem Content="80 mm"/>
+                            <ComboBoxItem Content="100 mm" IsSelected="True"/>
+                            <ComboBoxItem Content="120 mm"/>
+                            <ComboBoxItem Content="150 mm"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Margin="0,0,0,12">
+                        <TextBlock Text="Preț unitar (MDL)" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <TextBox x:Name="PretUnitarInput" Text="150" Height="36" Style="{StaticResource DefaultTextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,12,0">
+                        <TextBlock x:Name="DimensiuniLabel" Text="Dimensiuni disponibile" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <ComboBox x:Name="DimensiuniCombo" Height="36" Style="{StaticResource DefaultComboBoxStyle}">
+                            <ComboBoxItem Content="Caparol 1000x500 (până la 15cm)" IsSelected="True" Tag="Caparol"/>
+                            <ComboBoxItem Content="EPS-80 1000x500 (până la 15cm)" Tag="EPS-80"/>
+                            <ComboBoxItem Content="Polistiren Extrudat Gias 1250x580 (soclu)" Tag="ExtrudatGias"/>
+                            <ComboBoxItem Content="Material 550x1185 (până la 10cm)" Tag="Material4"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Button Grid.Row="1" Grid.Column="3" Content="Calculează" Height="36" VerticalAlignment="Bottom"
+                            Style="{StaticResource PrimaryButtonStyle}" Click="CalculateButton_Click"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <UniformGrid Grid.Row="0" Columns="3" Margin="0,0,0,14">
+                    <Border Style="{StaticResource KpiCardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Consum total" Foreground="{StaticResource MutedInkBrush}" FontSize="12"/>
+                            <TextBlock x:Name="ConsumTotalResult" Text="0 unități" FontSize="22" FontWeight="Black" Foreground="{StaticResource PrimaryRedBrush}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource KpiCardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Preț total" Foreground="{StaticResource MutedInkBrush}" FontSize="12"/>
+                            <TextBlock x:Name="PretTotalResult" Text="0 MDL" FontSize="22" FontWeight="Black"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource KpiCardStyle}" Margin="0">
+                        <StackPanel>
+                            <TextBlock Text="Cu TVA 20%" Foreground="{StaticResource MutedInkBrush}" FontSize="12"/>
+                            <TextBlock x:Name="PretCuTVAResult" Text="0 MDL" FontSize="22" FontWeight="Black" Foreground="{StaticResource PrimaryRedBrush}"/>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
+                <DataGrid Grid.Row="1" x:Name="ResultsDataGrid" Style="{StaticResource DefaultDataGridStyle}"
+                          AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Material" Binding="{Binding Material}" Width="130"/>
+                        <DataGridTextColumn Header="Suprafață (m²)" Binding="{Binding Suprafata, StringFormat=N2}" Width="110"/>
+                        <DataGridTextColumn Header="Consum" Binding="{Binding Consum, StringFormat=N2}" Width="90"/>
+                        <DataGridTextColumn Header="Preț unit. (MDL)" Binding="{Binding PretUnitar, StringFormat=N2}" Width="120"/>
+                        <DataGridTextColumn Header="Preț total (MDL)" Binding="{Binding PretTotal, StringFormat=N2}" Width="130"/>
+                        <DataGridTextColumn Header="Cu TVA (MDL)" Binding="{Binding PretCuTVA, StringFormat=N2}" Width="120"/>
+                        <DataGridTextColumn Header="Data" Binding="{Binding DataCalcul, StringFormat=dd/MM/yyyy HH:mm}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,14,0,0">
+                <Button Content="Salvează" Width="130" Style="{StaticResource PrimaryButtonStyle}" Click="SaveButton_Click" Margin="0,0,10,0"/>
+                <Button Content="Șterge rând" Width="130" Style="{StaticResource SecondaryButtonStyle}" Click="DeleteButton_Click" Margin="0,0,10,0"/>
+                <Button Content="Șterge tot" Width="130" Style="{StaticResource OutlineButtonStyle}" Click="ClearButton_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Column="1">
+            <Border Style="{StaticResource CardBorderStyle}" BorderBrush="{StaticResource PrimaryRedBrush}" BorderThickness="2" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Rezultat curent" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock x:Name="RightMaterialResult" Text="Alege materialul și apasă Calculează"
+                               Style="{StaticResource BodyTextBlockStyle}" Margin="0,6,0,14"/>
+                    <TextBlock Text="Consum total" FontSize="11" Foreground="{StaticResource MutedInkBrush}"/>
+                    <TextBlock x:Name="RightConsumTotalResult" Text="0 unități" FontSize="24" FontWeight="Black"
+                               Foreground="{StaticResource PrimaryRedBrush}" TextWrapping="Wrap"/>
+                    <TextBlock Text="Preț total" FontSize="11" Foreground="{StaticResource MutedInkBrush}" Margin="0,12,0,0"/>
+                    <TextBlock x:Name="RightPretTotalResult" Text="0 MDL" FontSize="24" FontWeight="Black" TextWrapping="Wrap"/>
+                    <TextBlock Text="Cu TVA 20%" FontSize="11" Foreground="{StaticResource MutedInkBrush}" Margin="0,12,0,0"/>
+                    <TextBlock x:Name="RightPretCuTVAResult" Text="0 MDL" FontSize="22" FontWeight="Bold"
+                               Foreground="{StaticResource PrimaryRedBrush}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Formule calcul" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="Polistiren: suprafață x 1.10" Style="{StaticResource BodyTextBlockStyle}"/>
+                    <TextBlock Text="Dibluri: suprafață x 6" Style="{StaticResource BodyTextBlockStyle}" Margin="0,8,0,0"/>
+                    <TextBlock Text="Adeziv: suprafață / 6" Style="{StaticResource BodyTextBlockStyle}" Margin="0,8,0,0"/>
+                    <TextBlock Text="Plasă: suprafață x 1.15" Style="{StaticResource BodyTextBlockStyle}" Margin="0,8,0,0"/>
+                    <TextBlock Text="Tencuială: suprafață / 4" Style="{StaticResource BodyTextBlockStyle}" Margin="0,8,0,0"/>
+                    <TextBlock Text="Amorsă: suprafață / 10" Style="{StaticResource BodyTextBlockStyle}" Margin="0,8,0,0"/>
+                    <Border Style="{StaticResource HorizontalSeparatorStyle}"/>
+                    <TextBlock Text="Costuri adiționale: manoperă +35%, TVA +20%" Style="{StaticResource BodyTextBlockStyle}"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

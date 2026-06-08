@@ -109,7 +109,7 @@ CalculatorMateriale/
 ### ✅ Faza 1: COMPLETĂ (Baza de date)
 - ✅ Toate modelele de date create
 - ✅ Relații și chei externe configurate
-- ✅ Reguli de integritate referențială (ON DELETE CASCADE, ON DELETE RESTRICT)
+- ✅ Reguli de integritate referențială (ON DELETE CASCADE, ON DELETE NO ACTION)
 - ✅ Date de test adăugate (5 clienți, 10 materiale)
 - ✅ Script SQL gata de rulare
 

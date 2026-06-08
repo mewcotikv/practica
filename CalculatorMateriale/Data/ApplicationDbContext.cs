@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using CalculatorMateriale.Models;
+using System.Linq;
 
 namespace CalculatorMateriale.Data
 {
@@ -20,12 +21,33 @@ namespace CalculatorMateriale.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Obiectiv>()
+                .ToTable(t => t.HasCheckConstraint("CK_Obiectiv_SuprafataM2", "[SuprafataM2] > 0"));
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties().Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
+                {
+                    property.SetPrecision(10);
+                    property.SetScale(2);
+                }
+            }
+
+            modelBuilder.Entity<Material>().Property(m => m.DensitateKgM3).HasPrecision(10, 4);
+            modelBuilder.Entity<Material>().Property(m => m.ConductivitateTermica).HasPrecision(10, 6);
+            modelBuilder.Entity<CalculConsum>().Property(c => c.ConsumPeM2).HasPrecision(10, 4);
+            modelBuilder.Entity<CalculConsum>().Property(c => c.ConsumTotal).HasPrecision(10, 4);
+            modelBuilder.Entity<CalculConsum>().Property(c => c.Randament).HasPrecision(5, 2);
+            modelBuilder.Entity<DetaliiComanda>().Property(d => d.Cantitate).HasPrecision(10, 4);
+            modelBuilder.Entity<DetaliiComanda>().Property(d => d.ProcentReducere).HasPrecision(5, 2);
+
             // Client - Obiectiv relationship (One-to-Many)
             modelBuilder.Entity<Obiectiv>()
                 .HasOne(o => o.Client)
                 .WithMany(c => c.Obiective)
                 .HasForeignKey(o => o.IdClient)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Obiectiv>().Navigation(o => o.Client).AutoInclude();
 
             // Client - Comanda relationship (One-to-Many)
             modelBuilder.Entity<Comanda>()
@@ -33,6 +55,7 @@ namespace CalculatorMateriale.Data
                 .WithMany(cl => cl.Comenzi)
                 .HasForeignKey(c => c.IdClient)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Comanda>().Navigation(c => c.Client).AutoInclude();
 
             // Obiectiv - Comanda relationship (One-to-Many)
             modelBuilder.Entity<Comanda>()
@@ -40,6 +63,7 @@ namespace CalculatorMateriale.Data
                 .WithMany(o => o.Comenzi)
                 .HasForeignKey(c => c.IdObiectiv)
                 .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Comanda>().Navigation(c => c.Obiectiv).AutoInclude();
 
             // Obiectiv - CalculConsum relationship (One-to-Many)
             modelBuilder.Entity<CalculConsum>()
@@ -54,6 +78,8 @@ namespace CalculatorMateriale.Data
                 .WithMany(m => m.CalculConsume)
                 .HasForeignKey(cc => cc.IdMaterial)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CalculConsum>().Navigation(cc => cc.Material).AutoInclude();
+            modelBuilder.Entity<CalculConsum>().Navigation(cc => cc.Obiectiv).AutoInclude();
 
             // Comanda - DetaliiComanda relationship (One-to-Many)
             modelBuilder.Entity<DetaliiComanda>()
