@@ -90,52 +90,93 @@
             </StackPanel>
         </Border>
 
-        <DataGrid Grid.Row="2" x:Name="ComenziGrid" AutoGenerateColumns="False"
-                  Style="{StaticResource DefaultDataGridStyle}" CanUserAddRows="False" IsReadOnly="True"
-                  SelectionMode="Single" SelectionChanged="ComenziGrid_SelectionChanged">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding IdComanda}" Width="60" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Client" Binding="{Binding Client.Nume}" Width="200" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Data comandă" Binding="{Binding DataComanda, StringFormat='dd.MM.yyyy'}" Width="120" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Data livrare" Binding="{Binding DataLivrare, StringFormat='dd.MM.yyyy'}" Width="120" IsReadOnly="False"/>
-                <DataGridComboBoxColumn Header="Status" SelectedValueBinding="{Binding Status}" Width="125">
-                    <DataGridComboBoxColumn.ItemsSource>
-                        <x:Array Type="{x:Type sys:String}">
-                            <sys:String>Noua</sys:String>
-                            <sys:String>Confirmata</sys:String>
-                            <sys:String>Finalizata</sys:String>
-                            <sys:String>Anulata</sys:String>
-                        </x:Array>
-                    </DataGridComboBoxColumn.ItemsSource>
-                    <DataGridComboBoxColumn.EditingElementStyle>
-                        <Style TargetType="ComboBox">
-                            <Setter Property="IsDropDownOpen" Value="True"/>
-                        </Style>
-                    </DataGridComboBoxColumn.EditingElementStyle>
-                    <DataGridComboBoxColumn.ElementStyle>
-                        <Style TargetType="ComboBox">
-                            <Setter Property="IsEnabled" Value="False"/>
-                        </Style>
-                    </DataGridComboBoxColumn.ElementStyle>
-                </DataGridComboBoxColumn>
-                <DataGridTextColumn Header="Valoare (MDL)" Binding="{Binding ValoareTotala, StringFormat='F2'}" Width="125" IsReadOnly="False"/>
-                <DataGridTextColumn Header="TVA (MDL)" Binding="{Binding TVA, StringFormat='F2'}" Width="105" IsReadOnly="False"/>
-                <DataGridTemplateColumn Header="Acțiuni" Width="230">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Status" Margin="2" Padding="8,4" FontSize="11"
-                                        Style="{StaticResource PrimaryButtonStyle}" Click="ChangeStatusButton_Click"/>
-                                <Button Content="Edit" Margin="2" Padding="8,4" FontSize="11"
-                                        Style="{StaticResource SecondaryButtonStyle}" Click="EditOrderButton_Click"/>
-                                <Button Content="Șterge" Margin="2" Padding="8,4" FontSize="11"
-                                        Style="{StaticResource OutlineButtonStyle}" Click="DeleteOrderButton_Click"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="18"/>
+                <ColumnDefinition Width="1.15*"/>
+            </Grid.ColumnDefinitions>
+
+            <DataGrid x:Name="ComenziGrid" AutoGenerateColumns="False"
+                      Style="{StaticResource DefaultDataGridStyle}" CanUserAddRows="False" IsReadOnly="True"
+                      SelectionMode="Single" SelectionChanged="ComenziGrid_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding IdComanda}" Width="55" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Client" Binding="{Binding Client.Nume}" Width="180" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Data comandă" Binding="{Binding DataComanda, StringFormat='dd.MM.yyyy'}" Width="110" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Livrare" Binding="{Binding DataLivrare, StringFormat='dd.MM.yyyy'}" Width="95" IsReadOnly="False"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="105" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Valoare" Binding="{Binding ValoareTotala, StringFormat='F2'}" Width="95" IsReadOnly="False"/>
+                    <DataGridTextColumn Header="TVA" Binding="{Binding TVA, StringFormat='F2'}" Width="80" IsReadOnly="False"/>
+                    <DataGridTemplateColumn Header="Acțiuni" Width="220">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Status" Margin="2" Padding="8,4" FontSize="11"
+                                            Style="{StaticResource PrimaryButtonStyle}" Click="ChangeStatusButton_Click"/>
+                                    <Button Content="Edit" Margin="2" Padding="8,4" FontSize="11"
+                                            Style="{StaticResource SecondaryButtonStyle}" Click="EditOrderButton_Click"/>
+                                    <Button Content="Șterge" Margin="2" Padding="8,4" FontSize="11"
+                                            Style="{StaticResource OutlineButtonStyle}" Click="DeleteOrderButton_Click"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}" Padding="14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="PozitiiTitle" Text="Poziții comandă" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
+
+                    <Grid Grid.Row="1" Margin="0,0,0,12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="95"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox x:Name="MaterialCombo" Height="34" Margin="0,0,8,8"
+                                  DisplayMemberPath="Denumire" SelectedValuePath="IdMaterial"
+                                  Style="{StaticResource DefaultComboBoxStyle}"
+                                  SelectionChanged="MaterialCombo_SelectionChanged"/>
+                        <TextBox x:Name="CantitateInput" Grid.Column="1" Height="34" Margin="0,0,8,8"
+                                 Style="{StaticResource DefaultTextBoxStyle}"/>
+                        <TextBox x:Name="PretPozitieInput" Grid.Column="2" Height="34" Margin="0,0,8,8"
+                                 Style="{StaticResource DefaultTextBoxStyle}"/>
+                        <Button Grid.Column="3" Content="Adaugă" Height="34" Width="82"
+                                Style="{StaticResource PrimaryButtonStyle}" Click="AddPositionButton_Click"/>
+
+                        <Button Grid.Row="1" Grid.Column="3" Content="Șterge" Height="34" Width="82"
+                                Style="{StaticResource OutlineButtonStyle}" Click="DeletePositionButton_Click"/>
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="Cantitate și preț unitar pentru materialul selectat"
+                                   Foreground="{StaticResource MutedInkBrush}" FontSize="11" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <DataGrid Grid.Row="2" x:Name="PozitiiGrid" AutoGenerateColumns="False"
+                              Style="{StaticResource DefaultDataGridStyle}" CanUserAddRows="False"
+                              IsReadOnly="True" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Material" Binding="{Binding Material.Denumire}" Width="*"/>
+                            <DataGridTextColumn Header="Cant." Binding="{Binding Cantitate, StringFormat='F2'}" Width="70"/>
+                            <DataGridTextColumn Header="Preț" Binding="{Binding PretUnitar, StringFormat='F2'}" Width="75"/>
+                            <DataGridTextColumn Header="Total" Binding="{Binding PretTotal, StringFormat='F2'}" Width="80"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
 
         <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
                 CornerRadius="8" Padding="14,10" Margin="0,14,0,0">
