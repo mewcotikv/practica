@@ -30,8 +30,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="SearchBox" Height="36" Style="{StaticResource DefaultTextBoxStyle}"
-                         Text="Căutare comenzi..."/>
+                <TextBox x:Name="SearchBox" Height="36" Style="{StaticResource DefaultTextBoxStyle}"/>
 
                 <ComboBox Grid.Column="1" x:Name="StatusFilter" Height="36" Margin="10,0,0,0"
                           Style="{StaticResource DefaultComboBoxStyle}">

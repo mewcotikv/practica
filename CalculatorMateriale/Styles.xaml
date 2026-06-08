@@ -157,7 +157,7 @@
 
     <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="Padding" Value="10,0"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
         <Setter Property="Background" Value="White"/>
@@ -170,7 +170,9 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="6">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      Margin="{TemplateBinding Padding}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
