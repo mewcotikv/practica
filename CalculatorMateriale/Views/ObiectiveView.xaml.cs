@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +11,7 @@ namespace CalculatorMateriale.Views
 {
     public partial class ObiectiveView : UserControl
     {
-        private IUnitOfWork _unitOfWork;
+        private IUnitOfWork? _unitOfWork;
         private ObservableCollection<Obiectiv> _obiective = new ObservableCollection<Obiectiv>();
 
         public ObiectiveView()
@@ -34,6 +35,9 @@ namespace CalculatorMateriale.Views
 
         private async System.Threading.Tasks.Task LoadClientsAsync()
         {
+            if (_unitOfWork == null)
+                return;
+
             var clients = (await _unitOfWork.ClientRepository.GetAllAsync()).OrderBy(c => c.Nume).ToList();
             if (!clients.Any())
             {
@@ -49,6 +53,9 @@ namespace CalculatorMateriale.Views
 
         private async System.Threading.Tasks.Task LoadObiectiveAsync()
         {
+            if (_unitOfWork == null)
+                return;
+
             var obiective = await _unitOfWork.ObiectivRepository.GetAllAsync();
             _obiective = new ObservableCollection<Obiectiv>(obiective.OrderByDescending(o => o.DataCrearii));
             ObiectiveGrid.ItemsSource = _obiective;
@@ -71,7 +78,7 @@ namespace CalculatorMateriale.Views
                 return false;
             }
 
-            if (!decimal.TryParse(SuprafataInput.Text, out var suprafata) || suprafata <= 0)
+            if (!TryReadDecimal(SuprafataInput.Text, out var suprafata) || suprafata <= 0)
             {
                 ValidationText.Text = "Suprafata trebuie sa fie mai mare decat 0.";
                 return false;
@@ -82,6 +89,8 @@ namespace CalculatorMateriale.Views
                 Denumire = DenumireInput.Text.Trim(),
                 IdClient = client.IdClient,
                 SuprafataM2 = suprafata,
+                Descriere = DenumireInput.Text.Trim(),
+                Adresa = string.IsNullOrWhiteSpace(LocalitateInput.Text) ? "Nespecificat" : LocalitateInput.Text.Trim(),
                 Localitate = LocalitateInput.Text.Trim(),
                 Status = "Activ",
                 DataCrearii = DateTime.Now
@@ -91,39 +100,65 @@ namespace CalculatorMateriale.Views
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!TryReadForm(out var obiectiv))
-                return;
+            try
+            {
+                if (_unitOfWork == null || !TryReadForm(out var obiectiv))
+                    return;
 
-            await _unitOfWork.ObiectivRepository.AddAsync(obiectiv);
-            await _unitOfWork.SaveChangesAsync();
-            await LoadObiectiveAsync();
+                await _unitOfWork.ObiectivRepository.AddAsync(obiectiv);
+                await _unitOfWork.SaveChangesAsync();
+                await LoadObiectiveAsync();
+                ValidationText.Text = "Proiectul a fost adăugat.";
+            }
+            catch (Exception ex)
+            {
+                ValidationText.Text = $"Eroare la adăugare proiect: {ex.Message}";
+            }
         }
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ObiectiveGrid.SelectedItem is not Obiectiv selected || !TryReadForm(out var form))
-                return;
+            try
+            {
+                if (_unitOfWork == null || ObiectiveGrid.SelectedItem is not Obiectiv selected || !TryReadForm(out var form))
+                    return;
 
-            selected.Denumire = form.Denumire;
-            selected.IdClient = form.IdClient;
-            selected.SuprafataM2 = form.SuprafataM2;
-            selected.Localitate = form.Localitate;
-            _unitOfWork.ObiectivRepository.Update(selected);
-            await _unitOfWork.SaveChangesAsync();
-            await LoadObiectiveAsync();
+                selected.Denumire = form.Denumire;
+                selected.IdClient = form.IdClient;
+                selected.SuprafataM2 = form.SuprafataM2;
+                selected.Descriere = form.Descriere;
+                selected.Adresa = form.Adresa;
+                selected.Localitate = form.Localitate;
+                _unitOfWork.ObiectivRepository.Update(selected);
+                await _unitOfWork.SaveChangesAsync();
+                await LoadObiectiveAsync();
+                ValidationText.Text = "Proiectul a fost actualizat.";
+            }
+            catch (Exception ex)
+            {
+                ValidationText.Text = $"Eroare la actualizare proiect: {ex.Message}";
+            }
         }
 
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ObiectiveGrid.SelectedItem is not Obiectiv selected)
+            try
             {
-                ValidationText.Text = "Selectati un obiectiv pentru stergere.";
-                return;
-            }
+                if (_unitOfWork == null || ObiectiveGrid.SelectedItem is not Obiectiv selected)
+                {
+                    ValidationText.Text = "Selectati un obiectiv pentru stergere.";
+                    return;
+                }
 
-            _unitOfWork.ObiectivRepository.Delete(selected);
-            await _unitOfWork.SaveChangesAsync();
-            await LoadObiectiveAsync();
+                _unitOfWork.ObiectivRepository.Delete(selected);
+                await _unitOfWork.SaveChangesAsync();
+                await LoadObiectiveAsync();
+                ValidationText.Text = "Proiectul a fost șters.";
+            }
+            catch (Exception ex)
+            {
+                ValidationText.Text = $"Eroare la ștergere proiect: {ex.Message}";
+            }
         }
 
         private void ObiectiveGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -135,6 +170,12 @@ namespace CalculatorMateriale.Views
             SuprafataInput.Text = selected.SuprafataM2.ToString("0.##");
             LocalitateInput.Text = selected.Localitate ?? string.Empty;
             ClientCombo.SelectedValue = selected.IdClient;
+        }
+
+        private static bool TryReadDecimal(string value, out decimal result)
+        {
+            return decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out result)
+                || decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
         }
     }
 }

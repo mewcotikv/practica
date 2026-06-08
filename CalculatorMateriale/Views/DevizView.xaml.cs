@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -49,13 +50,13 @@ namespace CalculatorMateriale.Views
                     return;
                 }
 
-                if (!decimal.TryParse(SuprafataDevizInput.Text, out var suprafata) || suprafata <= 0)
+                if (!TryReadDecimal(SuprafataDevizInput.Text, out var suprafata) || suprafata <= 0)
                 {
                     MessageBox.Show("Introduceți o suprafață validă.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                if (!decimal.TryParse(PretUnitarDevizInput.Text, out var pretUnitar) || pretUnitar < 0)
+                if (!TryReadDecimal(PretUnitarDevizInput.Text, out var pretUnitar) || pretUnitar < 0)
                 {
                     MessageBox.Show("Introduceți un preț unitar valid.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -185,7 +186,13 @@ namespace CalculatorMateriale.Views
 
         private static bool ParseMoney(string text, out decimal value)
         {
-            return decimal.TryParse(text.Replace("MDL", string.Empty).Trim(), out value);
+            return TryReadDecimal(text.Replace("MDL", string.Empty).Trim(), out value);
+        }
+
+        private static bool TryReadDecimal(string value, out decimal result)
+        {
+            return decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out result)
+                || decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
         }
 
         private async System.Threading.Tasks.Task SaveDevizAsOrderAsync(decimal totalMat, decimal totalFinal)
