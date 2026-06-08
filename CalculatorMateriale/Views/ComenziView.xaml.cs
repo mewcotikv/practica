@@ -64,7 +64,15 @@ namespace CalculatorMateriale.Views
                 .ToList();
             MaterialCombo.ItemsSource = _materials;
             if (_materials.Count > 0)
+            {
                 MaterialCombo.SelectedIndex = 0;
+                UpdateSelectedMaterialPrice();
+            }
+            else
+            {
+                PretPozitieInput.Clear();
+                StatusBarText.Text = "Nu există materiale active pentru poziții.";
+            }
         }
 
         private async System.Threading.Tasks.Task LoadOrdersAsync()
@@ -367,6 +375,9 @@ namespace CalculatorMateriale.Views
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(PretPozitieInput.Text))
+                UpdateSelectedMaterialPrice();
+
             if (!TryReadDecimal(CantitateInput.Text, out var cantitate) || cantitate <= 0)
             {
                 StatusBarText.Text = "Cantitatea trebuie să fie mai mare decât 0.";
@@ -435,8 +446,23 @@ namespace CalculatorMateriale.Views
 
         private void MaterialCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MaterialCombo.SelectedItem is Material material)
-                PretPozitieInput.Text = material.Pret.ToString("0.##");
+            UpdateSelectedMaterialPrice();
+        }
+
+        private void UpdateSelectedMaterialPrice()
+        {
+            var material = MaterialCombo.SelectedItem as Material;
+            if (material == null && MaterialCombo.SelectedValue is int materialId)
+                material = _materials.FirstOrDefault(m => m.IdMaterial == materialId);
+
+            if (material == null)
+            {
+                PretPozitieInput.Clear();
+                return;
+            }
+
+            PretPozitieInput.Text = material.Pret.ToString("0.##");
+            StatusBarText.Text = $"Preț completat automat: {material.Pret:0.##} MDL/{material.Unitate}.";
         }
 
         private void SelectOrder(int idComanda)

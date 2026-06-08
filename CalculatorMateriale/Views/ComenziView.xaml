@@ -148,7 +148,7 @@
                         </Grid.ColumnDefinitions>
 
                         <ComboBox x:Name="MaterialCombo" Height="34" Margin="0,0,8,8"
-                                  DisplayMemberPath="Denumire" SelectedValuePath="IdMaterial"
+                                  SelectedValuePath="IdMaterial"
                                   Style="{StaticResource DefaultComboBoxStyle}"
                                   SelectionChanged="MaterialCombo_SelectionChanged"/>
                         <TextBox x:Name="CantitateInput" Grid.Column="1" Height="34" Margin="0,0,8,8"
